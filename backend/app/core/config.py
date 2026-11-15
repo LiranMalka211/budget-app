@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     app_env: str = "development"
-    database_url: str = "sqlite:///./budget.db"
+    database_url: str = "postgresql+psycopg://budget:change-me@localhost:5432/budget"
     secret_key: str = "change-me-to-a-long-random-string"
     access_token_expire_minutes: int = 60 * 24 * 7
     reset_token_expire_minutes: int = 60

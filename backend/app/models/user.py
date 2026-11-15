@@ -18,6 +18,6 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
     password_hash: Mapped[str] = mapped_column(String(255))
     family_id: Mapped[str | None] = mapped_column(
-        String(36), ForeignKey("families.id", ondelete="SET NULL", use_alter=True), nullable=True
+        String(36), ForeignKey("families.id", ondelete="SET NULL", use_alter=True, name="users_family_id_fkey"), nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

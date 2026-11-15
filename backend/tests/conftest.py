@@ -9,7 +9,8 @@ from fastapi.testclient import TestClient
 
 # Settings are read once at import time, so the test database must be configured before importing the app.
 _TMP = tempfile.mkdtemp(prefix="budget-tests-")
-os.environ["DATABASE_URL"] = f"sqlite:///{_TMP}/test.db"
+# Set TEST_DATABASE_URL to run the suite against Postgres (tables are dropped, so never point it at real data).
+os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL") or f"sqlite:///{_TMP}/test.db"
 os.environ["APP_ENV"] = "development"
 os.environ["ANTHROPIC_API_KEY"] = ""
 os.environ["SMTP_HOST"] = ""

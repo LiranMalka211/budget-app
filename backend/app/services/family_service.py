@@ -136,6 +136,9 @@ def leave_family(db: Session, user: User) -> None:
         # Last person out: drop the remaining (pending) links and the family itself.
         for pending in db.scalars(select(FamilyMember).where(FamilyMember.family_id == family.id)).all():
             db.delete(pending)
+        # Hand the family's history back to whoever created each row (the reverse of joining).
+        for model in (Transaction, ScheduledTransaction):
+            db.execute(update(model).where(model.family_id == family.id).values(family_id=None))
         db.flush()
         db.delete(family)
     db.commit()

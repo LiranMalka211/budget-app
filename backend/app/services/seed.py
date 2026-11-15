@@ -33,6 +33,9 @@ def seed_lookups(db: Session) -> None:
     for type_id, key in ((TYPE_INCOME_ID, "income"), (TYPE_EXPENSE_ID, "expense")):
         if db.get(TransactionType, type_id) is None:
             db.add(TransactionType(id=type_id, type=key))
+    # Categories have no ORM relationship to their type, so the unit of work won't order the inserts for us;
+    # flush the types first or Postgres rejects the categories' foreign key.
+    db.flush()
     for cat_id, name, type_id, icon in BUILTIN_CATEGORIES:
         if db.get(Category, cat_id) is None:
             db.add(Category(id=cat_id, name=name, type_id=type_id, icon=icon, is_builtin=True))

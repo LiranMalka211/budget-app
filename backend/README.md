@@ -14,7 +14,8 @@ uvicorn app.main:app --reload --port 8000
 ```
 
 - API: http://localhost:8000/api, interactive docs: http://localhost:8000/docs
-- Tables are created automatically on startup (SQLite file `budget.db` by default) and the lookup tables are seeded.
+- Uses PostgreSQL. Start just the database with `docker compose up -d database` from the repo root (set `POSTGRES_PASSWORD` in `../.env` to match `DATABASE_URL` in `backend/.env`).
+- Tables are created automatically on startup and the lookup tables are seeded.
 - Point the frontend at it with `VITE_USE_MOCK=false` and `VITE_API_URL=http://localhost:8000/api` in `frontend/.env`.
 
 ## Tests
