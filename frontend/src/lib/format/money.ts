@@ -35,6 +35,8 @@ export function parseAmount(raw: string | number | null | undefined): number | n
   if (!s) return null
   const negativeByParens = /^\(.*\)$/.test(s)
   s = s.replace(/[^\d.,-]/g, '')
+  // Right-to-left exports sometimes put the minus sign after the number ("1,234.50-").
+  if (/^[\d.,]+-$/.test(s)) s = `-${s.slice(0, -1)}`
   // Treat comma as thousands separator when a dot is also present, otherwise as decimal.
   if (s.includes(',') && s.includes('.')) s = s.replace(/,/g, '')
   else if (s.includes(',') && !s.includes('.')) {

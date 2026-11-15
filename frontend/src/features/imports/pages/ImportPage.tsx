@@ -13,7 +13,7 @@ import type { ColumnMapping, ImportResult, ImportSource, NormalizedRow, RawRow }
 import { ColumnMapper } from '../components/ColumnMapper'
 import { FileDropzone } from '../components/FileDropzone'
 import { ImportPreviewTable } from '../components/ImportPreviewTable'
-import { guessMapping } from '../parsers/bankPresets'
+import { type AmountMode, guessMapping, modeFor } from '../parsers/bankPresets'
 import { normalizeRows } from '../parsers/normalizeRows'
 import { MAX_FILE_SIZE, parseFile } from '../parsers/parseFile'
 import { useCommitImport } from '../useImport'
@@ -59,6 +59,7 @@ export default function ImportPage() {
   const [rawRows, setRawRows] = useState<RawRow[]>([])
   const [source, setSource] = useState<ImportSource>('bank')
   const [mapping, setMapping] = useState<ColumnMapping>({ date: null, title: null, amount: null, debit: null, credit: null })
+  const [amountMode, setAmountMode] = useState<AmountMode>('single')
   const [rows, setRows] = useState<NormalizedRow[]>([])
   const [result, setResult] = useState<ImportResult | null>(null)
   const [parsing, setParsing] = useState(false)
@@ -79,7 +80,7 @@ export default function ImportPage() {
       setFileName(file.name)
       setHeaders(parsed.headers)
       setRawRows(parsed.rows)
-      setMapping(guessMapping(parsed.headers, source))
+      applyGuess(guessMapping(parsed.headers, source))
       setStep('map')
     } catch {
       toast.error(t('import.parseError'))
@@ -91,7 +92,13 @@ export default function ImportPage() {
   /** Re-guesses the mapping when the source changes, since credit files are shaped differently. */
   const handleSourceChange = (s: ImportSource) => {
     setSource(s)
-    setMapping(guessMapping(headers, s))
+    applyGuess(guessMapping(headers, s))
+  }
+
+  /** Uses an auto-detected mapping and the amount mode that matches it. */
+  function applyGuess(guess: ColumnMapping) {
+    setMapping(guess)
+    setAmountMode(modeFor(guess))
   }
 
   /** Applies the mapping and moves to the review step. */
@@ -126,7 +133,8 @@ export default function ImportPage() {
     setResult(null)
   }
 
-  const mappingComplete = Boolean(mapping.date && mapping.title && (mapping.amount || mapping.debit || mapping.credit))
+  const amountMapped = amountMode === 'single' ? Boolean(mapping.amount) : Boolean(mapping.debit || mapping.credit)
+  const mappingComplete = Boolean(mapping.date && mapping.title && amountMapped)
   const validCount = rows.filter((r) => !r.invalid).length
 
   return (
@@ -156,7 +164,10 @@ export default function ImportPage() {
                 {fileName} · {t('import.mapHint')}
               </p>
             </div>
-            <ColumnMapper headers={headers} value={mapping} onChange={setMapping} source={source} onSourceChange={handleSourceChange} />
+            <ColumnMapper headers={headers} value={mapping} onChange={setMapping} source={source} onSourceChange={handleSourceChange}
+              mode={amountMode}
+              onModeChange={setAmountMode}
+            />
             <div className="flex justify-between">
               <Button variant="outline" onClick={reset}>
                 {t('common.back')}

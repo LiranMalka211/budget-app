@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { ColumnMapping, ImportSource } from '@/types'
+import type { AmountMode } from '../parsers/bankPresets'
 
 interface ColumnMapperProps {
   headers: string[]
@@ -10,7 +11,10 @@ interface ColumnMapperProps {
   onChange: (next: ColumnMapping) => void
   source: ImportSource
   onSourceChange: (source: ImportSource) => void
+  mode: AmountMode
+  onModeChange: (mode: AmountMode) => void
 }
+
 
 const NONE = '__none__'
 const SOURCES: ImportSource[] = ['bank', 'credit', 'other']
@@ -51,15 +55,14 @@ function ColumnSelect({
 }
 
 /** Lets the user confirm which file columns hold the date, description and amount(s). */
-export function ColumnMapper({ headers, value, onChange, source, onSourceChange }: ColumnMapperProps) {
+export function ColumnMapper({ headers, value, onChange, source, onSourceChange, mode, onModeChange }: ColumnMapperProps) {
   const { t } = useTranslation()
-  const split = value.amount === null && (value.debit !== null || value.credit !== null)
-  const mode = split ? 'split' : 'single'
 
-  /** Switches between one signed column and separate debit/credit columns. */
+  /** Switches between one signed column and separate debit/credit columns, clearing the other mode's columns. */
   const setMode = (m: string) => {
-    if (m === 'split') onChange({ ...value, amount: null, debit: value.debit ?? null, credit: value.credit ?? null })
-    else onChange({ ...value, debit: null, credit: null, amount: value.amount ?? null })
+    const next = m as AmountMode
+    onModeChange(next)
+    onChange(next === 'split' ? { ...value, amount: null } : { ...value, debit: null, credit: null })
   }
 
   return (

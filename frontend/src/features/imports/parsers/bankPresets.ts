@@ -1,9 +1,9 @@
 import type { ColumnMapping, ImportSource } from '@/types'
 
 /** Header keywords (lower-cased, English and Hebrew) that identify each transaction field. */
-const KEYWORDS: Record<keyof ColumnMapping, string[]> = {
+export const HEADER_KEYWORDS: Record<keyof ColumnMapping, string[]> = {
   date: ['date', 'תאריך', 'תאריך עסקה', 'תאריך חיוב', 'מועד'],
-  title: ['description', 'details', 'name', 'merchant', 'beneficiary', 'payee', 'תיאור', 'פרטים', 'שם בית עסק', 'בית עסק', 'שם העסק', 'שם המוטב', 'אסמכתא'],
+  title: ['description', 'details', 'name', 'merchant', 'beneficiary', 'payee', 'תיאור', 'פרטים', 'שם בית עסק', 'בית עסק', 'שם העסק', 'שם המוטב', 'הפעולה', 'פעולה'],
   amount: ['amount', 'sum', 'total', 'סכום', 'סכום חיוב', 'סכום העסקה', 'סכום בש"ח'],
   debit: ['debit', 'withdrawal', 'חובה', 'משיכה', 'יצא'],
   credit: ['credit', 'deposit', 'זכות', 'הפקדה', 'נכנס'],
@@ -30,7 +30,7 @@ function findHeader(headers: string[], keywords: string[], exclude: Set<string>)
 export function guessMapping(headers: string[], source: ImportSource): ColumnMapping {
   const used = new Set<string>()
   const take = (field: keyof ColumnMapping) => {
-    const h = findHeader(headers, KEYWORDS[field], used)
+    const h = findHeader(headers, HEADER_KEYWORDS[field], used)
     if (h) used.add(h)
     return h
   }
@@ -51,4 +51,12 @@ export function guessMapping(headers: string[], source: ImportSource): ColumnMap
     }
   }
   return { date, title, amount, debit, credit }
+}
+
+/** One signed amount column, or separate debit (חובה) / credit (זכות) columns. */
+export type AmountMode = 'single' | 'split'
+
+/** The amount mode that fits a mapping, e.g. one produced by guessMapping. */
+export function modeFor(mapping: ColumnMapping): AmountMode {
+  return !mapping.amount && (mapping.debit || mapping.credit) ? 'split' : 'single'
 }
