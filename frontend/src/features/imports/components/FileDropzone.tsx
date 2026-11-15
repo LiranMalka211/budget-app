@@ -42,7 +42,7 @@ export function FileDropzone({ onFile, disabled }: FileDropzoneProps) {
         disabled && 'pointer-events-none opacity-60',
       )}
     >
-      <div className="rounded-full bg-muted p-3">
+      <div className="rounded-full bg-accent p-3 text-accent-foreground">
         <FileUp className="size-6 text-muted-foreground" />
       </div>
       <div>

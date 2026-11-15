@@ -10,10 +10,15 @@ export const CHART = {
   expense: '#eb6834',
   /** Single-hue colour for ranked magnitude bars. */
   magnitude: '#2a78d6',
+  /** Categorical slots 1-5 in fixed order (theme tokens, so dark mode steps them); validated as a set. */
+  categorical: ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'],
+  /** Neutral for the folded "Other" part: a gray, never a sixth hue. */
+  other: '#b8b7b0',
   grid: '#e1e0d9',
   axis: '#c3c2b7',
   tick: '#898781',
-  surface: '#ffffff',
+  /** Card surface; used for the 2px gap between pie slices. */
+  surface: 'var(--card)',
 } as const
 
 /** Shared mark specs: bars no thicker than 24px, 4px rounded data-end, 2px surface gap between neighbours. */

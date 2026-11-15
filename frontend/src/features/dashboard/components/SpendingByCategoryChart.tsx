@@ -1,13 +1,15 @@
-import { useMemo } from 'react'
+import { PieChart as PieIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Bar, BarChart, LabelList, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { cn } from 'cn'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useCategoryLabel } from '@/hooks/useLookups'
 import { formatMoney } from '@/lib/format/money'
 import { useLocale } from '@/lib/i18n/useDirection'
 import type { CategoryTotal } from '@/types'
 import { ChartCard } from './ChartCard'
-import { CHART, compactCurrency, MARK } from './chartTheme'
+import { CHART } from './chartTheme'
 import { ChartTooltip } from './ChartTooltip'
 
 interface SpendingByCategoryChartProps {
@@ -15,72 +17,69 @@ interface SpendingByCategoryChartProps {
   fetching?: boolean
 }
 
-interface Row {
+interface Slice {
+  key: string
   name: string
   total: number
   share: number
+  color: string
 }
 
-/** Keep the top N categories as their own bars and fold the tail into "Other". */
-const MAX_BARS = 7
+/** Categories that get their own slice; everything else folds into a neutral "Other" slice. */
+const MAX_SLICES = CHART.categorical.length
+/** The built-in catch-all category always joins the "Other" slice instead of taking a hue. */
+const OTHER_CATEGORY_ID = 'cat_other_expense'
 
 interface TooltipPayload {
   active?: boolean
   payload?: ReadonlyArray<{ payload?: unknown }>
 }
 
-/** Ranked horizontal bars of expense by category (largest first, one hue), with value at the tip and a table twin. */
+const percent = (share: number) => `${Math.round(share * 100)}%`
+
+/**
+ * Pie (donut) of expenses by category: the largest categories as slices in fixed palette order,
+ * the rest folded into a gray "Other", the period total in the centre, and a list of names,
+ * shares and amounts beside it so exact figures never depend on reading angles.
+ */
 export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryChartProps) {
   const { t } = useTranslation()
   const locale = useLocale()
   const categoryLabel = useCategoryLabel()
+  const [active, setActive] = useState<string | null>(null)
 
-  const rows = useMemo<Row[]>(() => {
-    const total = data.reduce((s, c) => s + c.total, 0)
-    const sorted = [...data].sort((a, b) => b.total - a.total)
-    const head = sorted.slice(0, MAX_BARS)
-    const tail = sorted.slice(MAX_BARS)
-    const result = head.map((c) => ({
+  const { slices, total } = useMemo(() => {
+    const sum = data.reduce((s, c) => s + c.total, 0)
+    const ranked = data.filter((c) => c.total > 0 && c.categoryId !== OTHER_CATEGORY_ID).sort((a, b) => b.total - a.total)
+    const head = ranked.slice(0, MAX_SLICES)
+    const otherTotal = sum - head.reduce((s, c) => s + c.total, 0)
+    const result: Slice[] = head.map((c, i) => ({
+      key: c.categoryId,
       name: categoryLabel(c.categoryId) || c.categoryName,
       total: c.total,
-      share: total ? c.total / total : 0,
+      share: sum ? c.total / sum : 0,
+      color: CHART.categorical[i],
     }))
-    if (tail.length) {
-      const otherTotal = tail.reduce((s, c) => s + c.total, 0)
-      const otherName = t('categories.otherExpense')
-      // Merge into the real "Other" category when it is already a bar, so the name never appears twice.
-      const existing = result.find((r) => r.name === otherName)
-      if (existing) {
-        existing.total += otherTotal
-        existing.share = total ? existing.total / total : 0
-      } else {
-        result.push({ name: otherName, total: otherTotal, share: total ? otherTotal / total : 0 })
-      }
+    if (otherTotal > 0.005) {
+      result.push({ key: 'other', name: t('dashboard.otherSlice'), total: otherTotal, share: otherTotal / sum, color: CHART.other })
     }
-    return result.sort((a, b) => b.total - a.total)
+    return { slices: result, total: sum }
   }, [data, categoryLabel, t])
 
-  /** Tooltip for the hovered bar: amount and share of all expenses. */
-  const renderTooltip = ({ active, payload }: TooltipPayload) => {
-    const datum = payload?.[0]?.payload as Row | undefined
-    if (!active || !datum) return null
-    return (
-      <ChartTooltip
-        title={`${datum.name} · ${Math.round(datum.share * 100)}%`}
-        rows={[{ label: t('common.expense'), value: datum.total, color: CHART.magnitude }]}
-      />
-    )
+  /** Tooltip for the hovered slice: amount, with the share in the title. */
+  const renderTooltip = ({ active: on, payload }: TooltipPayload) => {
+    const datum = payload?.[0]?.payload as Slice | undefined
+    if (!on || !datum) return null
+    return <ChartTooltip title={`${datum.name} · ${percent(datum.share)}`} rows={[{ label: t('common.expense'), value: datum.total, color: datum.color }]} />
   }
-
-  // Each bar band is 32px so the card grows with the number of categories instead of squeezing them.
-  const height = Math.max(160, rows.length * 32 + 16)
 
   return (
     <ChartCard
       title={t('dashboard.byCategory')}
       description={t('dashboard.byCategoryHint')}
       fetching={fetching}
-      empty={rows.length === 0}
+      empty={slices.length === 0}
+      chartIcon={PieIcon}
       table={
         <Table>
           <TableHeader>
@@ -91,42 +90,74 @@ export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryCh
             </TableRow>
           </TableHeader>
           <TableBody>
-            {rows.map((r) => (
-              <TableRow key={r.name}>
-                <TableCell>{r.name}</TableCell>
-                <TableCell className="text-end tabular-nums">{formatMoney(r.total, locale)}</TableCell>
-                <TableCell className="text-end tabular-nums">{Math.round(r.share * 100)}%</TableCell>
+            {slices.map((s) => (
+              <TableRow key={s.key}>
+                <TableCell>{s.name}</TableCell>
+                <TableCell className="text-end tabular-nums">{formatMoney(s.total, locale)}</TableCell>
+                <TableCell className="text-end tabular-nums">{percent(s.share)}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       }
     >
-      <div className="w-full" style={{ height }} dir="ltr">
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={rows} layout="vertical" barCategoryGap={MARK.barGap * 3} margin={{ top: 0, right: 72, left: 0, bottom: 0 }}>
-            <XAxis type="number" hide />
-            <YAxis
-              type="category"
-              dataKey="name"
-              width={110}
-              tick={{ fill: CHART.tick, fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              interval={0}
-            />
-            <Tooltip content={renderTooltip} cursor={false} />
-            <Bar dataKey="total" fill={CHART.magnitude} maxBarSize={MARK.maxBarSize} radius={MARK.horizontalRadius} activeBar={{ fillOpacity: 0.8 }}>
-              <LabelList
+      <div className="flex flex-col items-center gap-5 sm:flex-row">
+        <div className="relative size-48 shrink-0" dir="ltr">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={slices}
                 dataKey="total"
-                position="right"
-                offset={8}
-                formatter={(v: unknown) => compactCurrency(Number(v), locale)}
-                style={{ fill: CHART.tick, fontSize: 12 }}
-              />
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+                nameKey="name"
+                innerRadius="64%"
+                outerRadius="100%"
+                startAngle={90}
+                endAngle={-270}
+                stroke={CHART.surface}
+                strokeWidth={2}
+                isAnimationActive={false}
+                onMouseEnter={(_, i) => setActive(slices[i]?.key ?? null)}
+                onMouseLeave={() => setActive(null)}
+              >
+                {slices.map((s) => (
+                  <Cell
+                    key={s.key}
+                    fill={s.color}
+                    fillOpacity={active && active !== s.key ? 0.35 : 1}
+                    style={{ transition: 'fill-opacity 150ms ease-out', outline: 'none' }}
+                  />
+                ))}
+              </Pie>
+              <Tooltip content={renderTooltip} cursor={false} />
+            </PieChart>
+          </ResponsiveContainer>
+          {/* Period total in the hole; HTML so it uses the app font and wraps safely. */}
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="text-xs text-muted-foreground">{t('dashboard.totalSpent')}</span>
+            <span className="text-lg font-semibold tracking-tight tabular-nums">{formatMoney(total, locale, undefined, { maximumFractionDigits: 0 })}</span>
+          </div>
+        </div>
+
+        <ul className="flex w-full min-w-0 flex-col gap-0.5" aria-label={t('dashboard.byCategory')}>
+          {slices.map((s) => (
+            <li
+              key={s.key}
+              onMouseEnter={() => setActive(s.key)}
+              onMouseLeave={() => setActive(null)}
+              className={cn(
+                'flex items-center gap-2.5 rounded-md px-1.5 py-1.5 text-sm transition-opacity duration-150',
+                active && active !== s.key && 'opacity-50',
+              )}
+            >
+              <span className="size-2.5 shrink-0 rounded-full" style={{ background: s.color }} aria-hidden />
+              <span className="min-w-0 flex-1 truncate" title={s.name}>
+                {s.name}
+              </span>
+              <span className="w-9 shrink-0 text-end text-xs text-muted-foreground tabular-nums">{percent(s.share)}</span>
+              <span className="w-[4.5rem] shrink-0 text-end font-medium tabular-nums">{formatMoney(s.total, locale, undefined, { maximumFractionDigits: 0 })}</span>
+            </li>
+          ))}
+        </ul>
       </div>
     </ChartCard>
   )

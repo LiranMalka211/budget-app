@@ -1,4 +1,4 @@
-import { BarChart3, TableProperties } from 'lucide-react'
+import { BarChart3, type LucideIcon, TableProperties } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from 'cn'
@@ -17,14 +17,16 @@ interface ChartCardProps {
   /** Dim the content while new data is loading (no skeleton flash). */
   fetching?: boolean
   empty?: boolean
+  /** Icon for the "back to chart" toggle; matches the chart's form. */
+  chartIcon?: LucideIcon
 }
 
 /** Card wrapper for a chart with a chart/table view toggle so every value is reachable without hover. */
-export function ChartCard({ title, description, legend, children, table, fetching, empty }: ChartCardProps) {
+export function ChartCard({ title, description, legend, children, table, fetching, empty, chartIcon: ChartIcon = BarChart3 }: ChartCardProps) {
   const { t } = useTranslation()
   const [view, setView] = useState<'chart' | 'table'>('chart')
   return (
-    <Card>
+    <Card className="h-full">
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         {description && <CardDescription>{description}</CardDescription>}
@@ -32,11 +34,11 @@ export function ChartCard({ title, description, legend, children, table, fetchin
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={view === 'chart' ? 'Table view' : 'Chart view'}
+            aria-label={view === 'chart' ? t('dashboard.tableView') : t('dashboard.chartView')}
             aria-pressed={view === 'table'}
             onClick={() => setView((v) => (v === 'chart' ? 'table' : 'chart'))}
           >
-            {view === 'chart' ? <TableProperties /> : <BarChart3 />}
+            {view === 'chart' ? <TableProperties /> : <ChartIcon />}
           </Button>
         </CardAction>
       </CardHeader>

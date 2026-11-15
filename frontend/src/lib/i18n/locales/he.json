@@ -94,7 +94,7 @@
     "cashflow": "תזרים",
     "cashflowHint": "הכנסות מול הוצאות לפי חודש",
     "byCategory": "הוצאות לפי קטגוריה",
-    "byCategoryHint": "לאן הלך הכסף",
+    "byCategoryHint": "איך מתחלקות ההוצאות בתקופה",
     "recent": "תנועות אחרונות",
     "upcoming": "תשלומים קרובים",
     "latestInsight": "התובנה האחרונה",
@@ -105,7 +105,13 @@
       "lastMonth": "חודש שעבר",
       "last3Months": "3 חודשים אחרונים",
       "thisYear": "השנה"
-    }
+    },
+    "savedShare": "נשארו {{pct}}% מההכנסות",
+    "overspent": "ההוצאות עלו על ההכנסות",
+    "otherSlice": "אחר",
+    "totalSpent": "סה\"כ הוצאות",
+    "tableView": "הצגה כטבלה",
+    "chartView": "הצגה כגרף"
   },
   "transactions": {
     "title": "תנועות",

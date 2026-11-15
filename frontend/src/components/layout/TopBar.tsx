@@ -1,8 +1,9 @@
-import { LogOut, Menu, Settings, Wallet } from 'lucide-react'
+import { LogOut, Menu, Settings } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { ROUTES } from '@/app/routes'
+import { BrandMark } from '@/components/common/BrandMark'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
@@ -35,7 +36,7 @@ export function TopBar() {
   const drawerSide = getLanguage(i18n.resolvedLanguage ?? i18n.language).dir === 'rtl' ? 'right' : 'left'
 
   return (
-    <header className="sticky top-0 z-20 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur sm:px-6">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-2 border-b bg-background/80 px-4 backdrop-blur-md sm:px-6">
       <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
         <SheetTrigger asChild>
           <Button variant="ghost" size="icon" className="lg:hidden" aria-label={t('common.openMenu')}>
@@ -44,8 +45,8 @@ export function TopBar() {
         </SheetTrigger>
         <SheetContent side={drawerSide} className="w-72">
           <SheetHeader>
-            <SheetTitle className="flex items-center gap-2">
-              <Wallet className="size-5" /> {t('common.appName')}
+            <SheetTitle>
+              <BrandMark />
             </SheetTitle>
           </SheetHeader>
           <nav className="flex flex-col gap-1 px-2">
@@ -56,10 +57,7 @@ export function TopBar() {
         </SheetContent>
       </Sheet>
 
-      <div className="flex items-center gap-2 font-semibold lg:hidden">
-        <Wallet className="size-5" />
-        <span>{t('common.appName')}</span>
-      </div>
+      <BrandMark className="lg:hidden" />
 
       <div className="ms-auto flex items-center gap-1">
         <LanguageSwitcher />
@@ -68,7 +66,7 @@ export function TopBar() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full" aria-label={t('common.menu')}>
                 <Avatar className="size-8">
-                  <AvatarFallback className="text-xs">{initials(user.firstName, user.lastName)}</AvatarFallback>
+                  <AvatarFallback className="bg-secondary text-xs font-semibold text-secondary-foreground">{initials(user.firstName, user.lastName)}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

@@ -11,9 +11,9 @@ interface EmptyStateProps {
 /** Friendly placeholder shown when a list has no items, with an optional call to action. */
 export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-10 text-center">
-      <div className="rounded-full bg-muted p-3">
-        <Icon className="size-6 text-muted-foreground" />
+    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed bg-card/60 p-10 text-center">
+      <div className="rounded-full bg-accent p-3">
+        <Icon className="size-6 text-accent-foreground" aria-hidden />
       </div>
       <div>
         <p className="font-medium">{title}</p>

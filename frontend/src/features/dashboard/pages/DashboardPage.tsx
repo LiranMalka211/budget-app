@@ -36,13 +36,9 @@ export default function DashboardPage() {
               balance={query.data.balance}
               fetching={fetching}
             />
-            <div className="grid gap-6 lg:grid-cols-5">
-              <div className="lg:col-span-3">
-                <CashflowChart data={query.data.byMonth} fetching={fetching} />
-              </div>
-              <div className="lg:col-span-2">
-                <SpendingByCategoryChart data={query.data.byCategory} fetching={fetching} />
-              </div>
+            <div className="grid gap-6 lg:grid-cols-2">
+              <SpendingByCategoryChart data={query.data.byCategory} fetching={fetching} />
+              <CashflowChart data={query.data.byMonth} fetching={fetching} />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               <RecentTransactions items={query.data.recentTransactions} />

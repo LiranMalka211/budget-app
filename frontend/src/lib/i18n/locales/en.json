@@ -94,7 +94,7 @@
     "cashflow": "Cash flow",
     "cashflowHint": "Income vs. expenses per month",
     "byCategory": "Spending by category",
-    "byCategoryHint": "Where the money went",
+    "byCategoryHint": "How spending splits across categories",
     "recent": "Recent transactions",
     "upcoming": "Upcoming payments",
     "latestInsight": "Latest insight",
@@ -105,7 +105,13 @@
       "lastMonth": "Last month",
       "last3Months": "Last 3 months",
       "thisYear": "This year"
-    }
+    },
+    "savedShare": "{{pct}}% of income left over",
+    "overspent": "Spending exceeded income",
+    "otherSlice": "Other",
+    "totalSpent": "Total spent",
+    "tableView": "Table view",
+    "chartView": "Chart view"
   },
   "transactions": {
     "title": "Transactions",
