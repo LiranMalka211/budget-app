@@ -66,6 +66,7 @@ export function TransactionsTable({ items, onEdit, onDelete }: TransactionsTable
                 {formatDate(tx.date, locale)} · {categoryLabel(tx.categoryId)}
                 {showUploader && ` · ${memberName(tx.userId)}`}
               </p>
+              {tx.note && <p className="truncate text-xs text-muted-foreground italic">{tx.note}</p>}
             </div>
             <MoneyText amount={tx.amount} isIncome={isIncome(tx.typeId)} className="text-sm" />
             <RowActions tx={tx} onEdit={onEdit} onDelete={onDelete} />
@@ -74,13 +75,14 @@ export function TransactionsTable({ items, onEdit, onDelete }: TransactionsTable
       </ul>
 
       {/* Desktop table */}
-      <div className="hidden overflow-hidden rounded-xl border md:block">
+      <div className="hidden overflow-x-auto rounded-xl border bg-card md:block">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead>{t('common.date')}</TableHead>
               <TableHead>{t('common.title')}</TableHead>
               <TableHead>{t('common.category')}</TableHead>
+              <TableHead>{t('common.note')}</TableHead>
               {showUploader && <TableHead>{t('transactions.uploadedBy')}</TableHead>}
               <TableHead>{t('common.type')}</TableHead>
               <TableHead className="text-end">{t('common.amount')}</TableHead>
@@ -91,11 +93,11 @@ export function TransactionsTable({ items, onEdit, onDelete }: TransactionsTable
             {items.map((tx) => (
               <TableRow key={tx.id}>
                 <TableCell className="whitespace-nowrap text-muted-foreground">{formatDate(tx.date, locale)}</TableCell>
-                <TableCell className="font-medium">
-                  {tx.title}
-                  {tx.note && <span className="block text-xs font-normal text-muted-foreground">{tx.note}</span>}
-                </TableCell>
+                <TableCell className="font-medium">{tx.title}</TableCell>
                 <TableCell>{categoryLabel(tx.categoryId)}</TableCell>
+                <TableCell className="max-w-56 truncate text-muted-foreground" title={tx.note || undefined}>
+                  {tx.note || <span aria-hidden>—</span>}
+                </TableCell>
                 {showUploader && <TableCell className="text-muted-foreground">{memberName(tx.userId)}</TableCell>}
                 <TableCell>
                   <Badge variant="outline">{t(`transactions.source.${tx.source}`)}</Badge>
