@@ -17,6 +17,7 @@ const FamilyPage = lazy(() => import('@/features/family/pages/FamilyPage'))
 const ImportPage = lazy(() => import('@/features/imports/pages/ImportPage'))
 const InsightsPage = lazy(() => import('@/features/insights/pages/InsightsPage'))
 const SettingsPage = lazy(() => import('@/features/settings/pages/SettingsPage'))
+const LandingPage = lazy(() => import('@/features/landing/pages/LandingPage'))
 
 /** Full-screen spinner used while the session is restored or a page chunk loads. */
 function FullPageLoader() {
@@ -62,6 +63,15 @@ function ShellLayout() {
 /** The application route table. */
 export const router = createBrowserRouter([
   {
+    // Public home page; it reads the session itself to show "Open app" to signed-in visitors.
+    path: ROUTES.home,
+    element: (
+      <Suspense fallback={<FullPageLoader />}>
+        <LandingPage />
+      </Suspense>
+    ),
+  },
+  {
     element: <RedirectIfAuthenticated />,
     children: [
       { path: ROUTES.login, element: <LoginPage /> },
@@ -87,5 +97,5 @@ export const router = createBrowserRouter([
       },
     ],
   },
-  { path: '*', element: <Navigate to={ROUTES.dashboard} replace /> },
+  { path: '*', element: <Navigate to={ROUTES.home} replace /> },
 ])

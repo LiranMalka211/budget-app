@@ -206,7 +206,7 @@ export default function ImportPage() {
       {step === 'done' && result && (
         <Card>
           <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
-            <CheckCircle2 className="size-10 text-emerald-600" />
+            <CheckCircle2 className="size-10 text-income" />
             <div>
               <p className="text-lg font-semibold">{t('import.done')}</p>
               <p className="text-sm text-muted-foreground">

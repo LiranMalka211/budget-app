@@ -5,6 +5,7 @@ import { Toaster } from '@/components/ui/sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AuthProvider } from '@/features/auth/authStore'
 import { useDirection } from '@/lib/i18n/useDirection'
+import { ThemeProvider } from '@/lib/theme/ThemeProvider'
 import { ApiError } from '@/types'
 
 /** Applies the active language's text direction to Radix components and the document. */
@@ -26,19 +27,21 @@ function createQueryClient() {
   })
 }
 
-/** Composes every global provider: data cache, auth session, direction, tooltips and toasts. */
+/** Composes every global provider: theme, data cache, auth session, direction, tooltips and toasts. */
 export function AppProviders({ children }: { children: ReactNode }) {
   const [queryClient] = useState(createQueryClient)
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <DirectionBoundary>
-          <TooltipProvider>
-            {children}
-            <Toaster position="bottom-center" />
-          </TooltipProvider>
-        </DirectionBoundary>
-      </AuthProvider>
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <DirectionBoundary>
+            <TooltipProvider>
+              {children}
+              <Toaster position="bottom-center" />
+            </TooltipProvider>
+          </DirectionBoundary>
+        </AuthProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }

@@ -20,7 +20,7 @@ function StatTile({ label, value, icon: Icon, tone }: { label: string; value: st
         <div
           className={cn(
             'flex size-11 shrink-0 items-center justify-center rounded-xl',
-            tone === 'income' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700',
+            tone === 'income' ? 'bg-income-soft text-income' : 'bg-expense-soft text-expense',
           )}
           aria-hidden
         >
@@ -45,17 +45,17 @@ export function BalanceCards({ totalIncome, totalExpense, balance, fetching }: B
 
   return (
     <div className={cn('grid gap-4 transition-opacity md:grid-cols-3', fetching && 'opacity-50')}>
-      <Card className="relative bg-primary text-primary-foreground ring-0 md:col-span-1">
+      <Card className="relative bg-primary text-primary-foreground ring-0 dark:shadow-[0_0_60px_-10px_var(--glow-strong)] md:col-span-1">
         {/* Decorative glow so the hero card has depth without a busy gradient. */}
         <div
           className="pointer-events-none absolute -end-16 -top-20 size-56 rounded-full bg-white/10 blur-2xl"
           aria-hidden
         />
-        <CardContent className="relative flex h-full flex-col justify-center gap-1">
+        <CardContent className="@container relative flex h-full flex-col justify-center gap-1">
           <p className="flex items-center gap-2 text-sm text-primary-foreground/80">
             <Wallet className="size-4" aria-hidden /> {t('dashboard.balance')}
           </p>
-          <p className="text-4xl font-bold tracking-tight tabular-nums sm:text-[2.75rem]">{formatMoney(balance, locale)}</p>
+          <p className="text-[clamp(1.75rem,13cqi,2.75rem)] leading-tight font-bold tracking-tight tabular-nums">{formatMoney(balance, locale)}</p>
           {savedPct !== null && (
             <p className="mt-2 inline-flex w-fit items-center gap-1.5 rounded-full bg-white/15 px-2.5 py-1 text-xs font-medium">
               {positive ? <TrendingUp className="size-3.5" aria-hidden /> : <TrendingDown className="size-3.5" aria-hidden />}

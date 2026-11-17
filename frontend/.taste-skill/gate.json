@@ -1,0 +1,1251 @@
+{
+ "start": "2026-11-16T19:33:19.636Z",
+ "round": 3,
+ "idle": 0,
+ "errors": 0,
+ "status": "open",
+ "history": [
+  {
+   "at": "2026-11-17T06:30:57.655Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 60,
+   "round": 1,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T06:34:51.396Z",
+   "mode": "manual",
+   "status": "fail",
+   "fails": 33,
+   "round": 2,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T06:37:51.797Z",
+   "mode": "manual",
+   "status": "open",
+   "fails": 21,
+   "round": 3,
+   "reused": false,
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T06:40:23.572Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T08:04:49.966Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T08:17:31.554Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T08:23:09.134Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  },
+  {
+   "at": "2026-11-17T08:41:13.460Z",
+   "mode": "hook",
+   "host": "claude",
+   "decision": "allow",
+   "reason": "no build is active here",
+   "stopHookActive": false
+  }
+ ],
+ "max": 3,
+ "marker": {
+  "page": null,
+  "dir": "C:\\Users\\Liran Malka\\Desktop\\budget-app\\frontend",
+  "kind": "software",
+  "start": "2026-11-16T19:33:19.636Z",
+  "by": "start.mjs",
+  "url": "http://localhost:5173/",
+  "category": "family budget app",
+  "primary": "Create a free account"
+ },
+ "manual": true,
+ "roundKey": "c2a46e4adfec922b:9a1ccb72",
+ "roundFree": false,
+ "idleFree": false,
+ "blockKey": null,
+ "fp": "c2a46e4adfec922b",
+ "page": "http://localhost:5173/",
+ "found": {
+  "fails": [
+   {
+    "check": "text-only",
+    "where": "section#questions \"Questions\"",
+    "msg": "the closing section is only text: no picture, icon, mock or effect in it",
+    "fix": "give the section a visual: a photograph that fits, the real icons, or a UI fragment on a ground",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "text-only"
+    ],
+    "wheres": [
+     "section#questions \"Questions\""
+    ]
+   },
+   {
+    "check": "card-layout",
+    "where": "section#features > div.wrap > div.mt-8.grid \"Transactions Add, edit and filter every \"",
+    "msg": "4 of 4 cards drawn one way (one panel, ground, placement and fragment): copies of one card",
+    "fix": "a card layout at most twice on a page: build the other sections another way",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "card-layout"
+    ],
+    "wheres": [
+     "section#features > div.wrap > div.mt-8.grid \"Transactions Add, edit and filter every \""
+    ]
+   },
+   {
+    "check": "card-layout",
+    "where": "section#family > div.wrap > div.mt-12.grid \"Members DC Dana Cohen Head YC Yossi Cohe\"",
+    "msg": "4 of 4 cards drawn one way (one panel, ground, placement and fragment): copies of one card",
+    "fix": "a card layout at most twice on a page: build the other sections another way",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "card-layout"
+    ],
+    "wheres": [
+     "section#family > div.wrap > div.mt-12.grid \"Members DC Dana Cohen Head YC Yossi Cohe\""
+    ]
+   },
+   {
+    "check": "button-styles",
+    "where": "(one screen)",
+    "msg": "3 button styles on one screen: pill, fill #fa8927 (\"Create a free account\"); soft, fill #191b1d (\"K7PQ-3MZD\", in a mock); soft, fill #fa8927 (\"Approve\", in a mock); the odd one out: \"Approve\"",
+    "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "button-styles"
+    ],
+    "wheres": [
+     "(one screen)"
+    ]
+   },
+   {
+    "check": "copy-headings",
+    "where": "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > h3.text-xl.font-medium \"The bank file import\"",
+    "msg": "\"The bank file import\" names no product, part, place or section (4 headings like it; at most one brand line per page) (and 3 more like it: \"Categories for every row\", \"The dashboard and its ch\", \"The import lane: bank fi\")",
+    "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "copy-headings"
+    ],
+    "wheres": [
+     "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > h3.text-xl.font-medium \"The bank file import\""
+    ]
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#flow / section#questions",
+    "msg": "374px between these sections, +92% against the median 195px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-gaps"
+    ],
+    "wheres": [
+     "section#flow / section#questions"
+    ]
+   },
+   {
+    "check": "empty-area",
+    "where": "footer#closing \"Start the household budget this month\"",
+    "msg": "64% of the section is empty: 208px above its first content, 192px of empty rows between its content, 13% beside content that covers under half the container, in its 784px of rows (WARN over 35%, FAIL over 50%)",
+    "fix": "fill the section: a picture or a second column beside the words, or more of its own content; the section stays one or two screens tall (T-height)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "empty-area"
+    ],
+    "wheres": [
+     "footer#closing \"Start the household budget this month\""
+    ]
+   },
+   {
+    "check": "focus-ring",
+    "where": ".focus-visible\\:outline-none:focus-visible",
+    "msg": "\".focus-visible\\:outline-none:focus-visible\" in the page removes the focus outline and sets nothing in its place",
+    "fix": "keep the kit's :focus-visible ring, or put a change of the same strength (a 2px line in --action) in the rule that removes it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "focus-ring"
+    ],
+    "wheres": [
+     ".focus-visible\\:outline-none:focus-visible"
+    ]
+   },
+   {
+    "check": "hero-enter",
+    "where": "section#hero",
+    "msg": "the hero does not enter on load: no head line setting html.m-enter (motion.md, The hero's entrance)",
+    "fix": "put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "hero-enter"
+    ],
+    "wheres": [
+     "section#hero"
+    ]
+   },
+   {
+    "check": "moment-none",
+    "where": "(the page)",
+    "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+    "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "moment-none"
+    ],
+    "wheres": [
+     "(the page)"
+    ]
+   },
+   {
+    "check": "section-height",
+    "where": "footer#closing \"Start the household budget this monthFre\"",
+    "msg": "the section's content does not fit it: its lowest content ends 868px below its top, past 828px (the section less 72px of bottom padding) (SR-2)",
+    "fix": "fit the content above the section's bottom padding (--padb), or make it two screens (.g2) in two groups",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-height"
+    ],
+    "wheres": [
+     "footer#closing \"Start the household budget this monthFre\""
+    ]
+   },
+   {
+    "check": "one-section",
+    "where": "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\"",
+    "msg": "a band: a box 99% of the section wide on a ground of its own that holds the heading or the intro: the section's own ground is the band (SR-4)",
+    "fix": "put every block of <main> in a <section>, and give a band its own section instead of a ground inside one",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "one-section"
+    ],
+    "wheres": [
+     "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div#root \"Skip to contentFamily BudgetProductFeatu\"",
+    "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div#root \"Skip to contentFamily BudgetProductFeatu\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "section#hero > div.wrap.flex \"The budget appfor familieswho share mone\"",
+    "msg": "the hero's .wrap holds 2 children, 0 of them .hero-text: one .hero-text and at most one strip (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "section#hero > div.wrap.flex \"The budget appfor familieswho share mone\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "footer#closing \"Start the household budget this monthFre\"",
+    "msg": "the section needs exactly one in-flow child .wrap (it has 1 in-flow child, 0 .wrap) (and 2 more like it: \"Start the household budg\", \"Start the household budg\") (SR-6)",
+    "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "footer#closing \"Start the household budget this monthFre\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\"",
+    "msg": "a box runs 8-1432px, outside the container lines of section 8 at 80-1360px: full width is for background layers and grounds only (SR-6)",
+    "fix": "keep it inside the container lines (.wrap): full width is for background layers and grounds only",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "footer#closing > div.flex.flex-1 > div.mx-3.flex \"Start the household budget this monthFre\"",
+    "msg": "a box runs 24-1416px, outside the container lines of section 8 at 80-1360px: full width is for background layers and grounds only (SR-6)",
+    "fix": "keep it inside the container lines (.wrap): full width is for background layers and grounds only",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "footer#closing > div.flex.flex-1 > div.mx-3.flex \"Start the household budget this monthFre\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "div.fade-b.mt-12 > div.app-window.flex > div.flex.h-11 > span.text-sm.font-semibold \"Family Budget\"",
+    "msg": "1 text block starts on a left line at x 151, 71px from the container's left: text starts on the container's left, or on one split line (x 623, 732, 841) (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "div.fade-b.mt-12 > div.app-window.flex > div.flex.h-11 > span.text-sm.font-semibold \"Family Budget\""
+    ]
+   },
+   {
+    "check": "container-edges",
+    "where": "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > p.mt-2.leading-7 \"Drop the CSV, XLS or XLSX export. The ap\"",
+    "msg": "3 text blocks start on a left line at x 132, 52px from the container's left: text starts on the container's left, or on one split line (x 623, 732, 841) (also \"Every row gets one of the 15 bui\", \"The dashboard shows income again\") (and 2 more like it: x 122, x 586) (SR-6)",
+    "fix": "start the text on the container's left, or on the one split line every split shares",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "container-edges"
+    ],
+    "wheres": [
+     "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > p.mt-2.leading-7 \"Drop the CSV, XLS or XLSX export. The ap\""
+    ]
+   },
+   {
+    "check": "row-lines",
+    "where": "div.wrap.flex > div.lit-ground.relative > div.glow-card.absolute > dl.mt-3.grid \"Income+₪24,000Expenses-₪7,213\"",
+    "msg": "a row of 2 items: its first item starts at 812px, its column's left line at 732px; its last item ends at 1080px, its column's right line at 1360px (2px either way) (SR-7)",
+    "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "row-lines"
+    ],
+    "wheres": [
+     "div.wrap.flex > div.lit-ground.relative > div.glow-card.absolute > dl.mt-3.grid \"Income+₪24,000Expenses-₪7,213\""
+    ]
+   },
+   {
+    "check": "split-pair",
+    "where": "section#walkthrough > div.wrap.flex > div.mt-10.grid \"1The bank file importDrop the CSV, XLS o\"",
+    "msg": "the two columns of the split start 193px apart at the top: a split's columns are top-aligned, 8px either way (SR-8)",
+    "fix": "top-align both columns of the split (align-items: start)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "split-pair"
+    ],
+    "wheres": [
+     "section#walkthrough > div.wrap.flex > div.mt-10.grid \"1The bank file importDrop the CSV, XLS o\""
+    ]
+   },
+   {
+    "check": "split-pair",
+    "where": "div.app-window.flex > div.flex.min-h-0 > div.settle.flex > div.flex.min-h-0 \"DateTitleCategoryAdded byAmount15 Nov 20\"",
+    "msg": "the split's columns are off the page's one pair of lines: its right column starts at x 1039, the first split's at 732; its right column starts at x 1039, on none of the split lines 623 (k=5), 732 (k=6), 841 (k=7) (SR-8)",
+    "fix": "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "split-pair"
+    ],
+    "wheres": [
+     "div.app-window.flex > div.flex.min-h-0 > div.settle.flex > div.flex.min-h-0 \"DateTitleCategoryAdded byAmount15 Nov 20\""
+    ]
+   },
+   {
+    "check": "split-pair",
+    "where": "section#questions > div.wrap > div.grid.grid-cols-1 \"QuestionsWhat people ask before they sta\"",
+    "msg": "the split's columns are off the page's one pair of lines: its right column starts at x 623, the first split's at 732 (SR-8)",
+    "fix": "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+    "widths": [
+     1440
+    ],
+    "from": "consistency",
+    "ids": [
+     "split-pair"
+    ],
+    "wheres": [
+     "section#questions > div.wrap > div.grid.grid-cols-1 \"QuestionsWhat people ask before they sta\""
+    ]
+   },
+   {
+    "check": "empty-visual",
+    "where": "div.grid.gap-4 > div.rounded-xl.border:nth-of-type(5) > div > svg.h-32.w-full",
+    "msg": "the picture shows nothing here: with it hidden the screen looks the same (the picture is there but invisible: faded out, clipped or covered), so the visitor sees only the ground behind it",
+    "fix": "make the visual draw at every width: a picture that loads, an effect that renders, or its still fallback; never an empty frame",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "empty-visual"
+    ],
+    "wheres": [
+     "div.grid.gap-4 > div.rounded-xl.border:nth-of-type(5) > div > svg.h-32.w-full"
+    ]
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#walkthrough / section#features",
+    "msg": "330px between these sections, +84% against the median 179px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency",
+    "ids": [
+     "section-gaps"
+    ],
+    "wheres": [
+     "section#walkthrough / section#features"
+    ]
+   },
+   {
+    "check": "edge-left",
+    "where": "#closing div.flex.items-center \"© 2026 Family Budget\"",
+    "msg": "starts at x 1151.2; the lines are 80 and the column starts",
+    "fix": "start it on the .wrap left line",
+    "widths": [
+     1440
+    ],
+    "from": "layout",
+    "ids": [
+     "edge-left"
+    ],
+    "wheres": [
+     "#closing div.flex.items-center \"© 2026 Family Budget\""
+    ]
+   }
+  ],
+  "warns": [
+   {
+    "check": "nav",
+    "where": "div.landing > header.fixed.inset-x-0 > div.wrap.grid > a.w-fit.rounded-md \"Family Budget\"",
+    "msg": "the nav is lopsided: its first item starts 7px inside the content's edge (80px), while its last ends on the other edge",
+    "fix": "start the nav's first item and end its last on the content's two edges",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "pinned",
+    "where": "div.wrap.flex > div.mt-10.grid > div.min-w-0 > div.fade-b \"Family Budget Search by title… Dashboard\"",
+    "msg": "held on screen for 1.1 screens of scroll (position: sticky) while the page moves on (a narrow sticky column)",
+    "fix": "let the section scroll with the page",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "no-visual",
+    "where": "section#walkthrough \"The path from a bank file to a budget\"",
+    "msg": "pictures, effects and mocks cover 24% of this section; a feature section needs a visual (about 25% or more)",
+    "fix": "give the section a visual: a UI fragment on a ground, real icons, or a photograph that fits",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cta",
+    "where": "section#walkthrough \"The path from a bank file to a budget\"",
+    "msg": "a section over 1.5 screens long with no link or button in it",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-headings",
+    "where": "div.mt-8.grid > article.glow-card.flex:nth-of-type(2) > div.flex.items-center > h3.text-xl.font-medium \"Scheduled payments\"",
+    "msg": "the card title \"Scheduled payments\" names no product, part, place or section (6 card titles like it) (and 5 more like it: \"File import\", \"Monthly insights\", \"Invite key\", \"Every row says who added\", ...)",
+    "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "col-edge",
+    "where": "section#walkthrough > div.wrap.flex > div.mt-10.grid > div.min-w-0 \"Family Budget Search by title… Dashboard\"",
+    "msg": "the second column starts at 4 places: 515px (section#walkthrough), 623px (section#questions), 732px (section#hero), 1039px (section#product)",
+    "fix": "start the second column of every split on the same one or two grid columns",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#family / section#flow",
+    "msg": "275px between these sections, +41% against the median 195px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     1440,
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "header.fixed.inset-x-0 > div.wrap.grid > nav.hidden.items-center > a.link-draw.rounded-sm:nth-of-type(1) \"Product\"",
+    "msg": "\"Product\" opens a section headed \"The transactions ledger, as it is in the app\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-labels",
+    "where": "header.fixed.inset-x-0 > div.wrap.grid > nav.hidden.items-center > a.link-draw.rounded-sm:nth-of-type(2) \"Features\"",
+    "msg": "\"Features\" opens a section headed \"What the app does\"",
+    "fix": "name each nav link after the heading of the section it opens",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-length",
+    "where": "section#questions \"Questions\"",
+    "msg": "2 sections over 90 words a screen outside the UI mocks (\"Questions\" 117, \"What the app does\" 105); 65 words a screen across the page (519 words in 8 screens): a tech page says it in about 80 or fewer",
+    "fix": "cut every section to its heading, one line and the product UI: the UI says the rest; no second paragraph, no list of feature sentences",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "nav-current",
+    "where": "div#root > div.landing > header.fixed.inset-x-0",
+    "msg": "the nav stays on screen with 4 links to the page's sections, but never marks the one you are in (no link changes as the page scrolls)",
+    "fix": "mark the link of the section on screen (a colour, a weight or a line under it) as the visitor scrolls",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "empty-area",
+    "where": "section#walkthrough \"The path from a bank file to a budget\"",
+    "msg": "43% of the section is empty: 176px of empty rows between its content, 32% beside content that covers under half the container, in its 1644px of rows (WARN over 35%, FAIL over 50%)",
+    "fix": "fill the section: a picture or a second column beside the words, or more of its own content; the section stays one or two screens tall (T-height)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "share-meta",
+    "where": "head",
+    "msg": "the head lacks og:image, twitter:card: a shared link shows no picture or title of its own",
+    "fix": "copy the head block of starter.html: og tags, twitter:card, the icon and theme-color (references/system.md, Head)",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "row-lines",
+    "where": "div.app-window.flex > div.flex.min-h-0 > div.settle.flex > div.grid.gap-4 \"Balance₪16,78770% of income left overInc\"",
+    "msg": "a row of 3 items: its first item starts at 708px, its column's left line at 515px; its last item ends at 1343px, its column's right line at 1360px (2px either way) (it sits in a part held on screen as the page scrolls: told as a WARN) (SR-7)",
+    "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+    "widths": [
+     1440
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "div.landing > header.fixed.inset-x-0 > div.wrap.grid > a.w-fit.rounded-md \"Family Budget\"",
+    "msg": "a 147x32px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "header.fixed.inset-x-0 > div.wrap.grid > div.flex.items-center > button.inline-flex.shrink-0:nth-of-type(1)",
+    "msg": "a 32x32px tap target (and 1 more like it on this screen): under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "header.fixed.inset-x-0 > div.wrap.grid > div.flex.items-center > button.inline-flex.shrink-0:nth-of-type(3)",
+    "msg": "a 32x32px tap target: under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "div.flex.flex-1 > div.wrap.closing-inner-slab > nav.flex.flex-wrap > a.link-draw.rounded-sm:nth-of-type(1) \"Product\"",
+    "msg": "a 50x20px tap target (and 4 more like it on this screen): under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "tap-size",
+    "where": "div.flex.flex-1 > div.wrap.closing-inner-slab > div.flex.items-center > button.inline-flex.shrink-0:nth-of-type(1)",
+    "msg": "a 32x32px tap target (and 1 more like it on this screen): under the 44px a phone needs",
+    "fix": "make every link and control outside running text 44px tall on a phone: display: inline-flex; align-items: center; min-height: 44px (a footer list then needs no gap), a 44px small button, or a transparent ::before laid past the box",
+    "widths": [
+     390,
+     320
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cut-text",
+    "where": "li.relative.flex:nth-of-type(1) > div.flex.min-h-56 > div.flex.items-center:nth-of-type(3) > span.truncate \"Description column\"",
+    "msg": "shortened with an ellipsis (and 2 more like it: \"Debit (expense) column\", \"Credit (income) column\")",
+    "fix": "give the text room: no overflow clipping a line, no line past its box",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cta",
+    "where": "section#features \"What the app does\"",
+    "msg": "a section over 1.5 screens long with no link or button in it",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "cta",
+    "where": "section#family \"One ledger for the whole family\"",
+    "msg": "a section over 1.5 screens long with no link or button in it",
+    "fix": "add the action: a button in the hero, one on every priced item, one in the closing section",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "heading-scale",
+    "where": "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > h3.text-xl.font-medium \"The bank file import\"",
+    "msg": "h3 headings in 2 sizes, 16px (\"Members\") to 20px (x1.25)",
+    "fix": "size headings by level: the h1 largest, one size per level, each level below the one above",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#hero / section#product",
+    "msg": "117px between these sections, -35% against the median 179px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#product / section#walkthrough",
+    "msg": "117px between these sections, -35% against the median 179px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#features / section#family",
+    "msg": "279px between these sections, +56% against the median 179px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "section-gaps",
+    "where": "section#flow / section#questions",
+    "msg": "117px between these sections, -35% against the median 179px",
+    "fix": "use one gap between sections (all within 25% of each other)",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "visual-caption",
+    "where": "div.flex.flex-wrap > ul.flex.min-w-36 > li.flex.items-center:nth-of-type(1) > span.min-w-0.flex-1 \"Rent & mortgage\"",
+    "msg": "a muted 12px line of 1 row sits 20px under the drawing (svg): it reads as a caption: \"Rent & mortgage\"; no caption or description under any image, render or visual (house rule)",
+    "fix": "take the line away: no caption or description under, over or on any image, render or visual; a licence credit goes in one footer line",
+    "widths": [
+     390
+    ],
+    "from": "consistency"
+   },
+   {
+    "check": "copy-cast",
+    "msg": "default-cast names: Dana",
+    "fix": "person names come only from the brief; a mock's names fit its locale and are not the names every model picks (references/copy-tells.md)",
+    "widths": [],
+    "from": "copy",
+    "where": "copy x1: \"Dana\"",
+    "exact": false
+   }
+  ],
+  "crashed": [],
+  "seconds": {
+   "consistency": 106,
+   "layout": 13
+  }
+ },
+ "open": [
+  {
+   "check": "card-layout",
+   "where": "section#features > div.wrap > div.mt-8.grid \"Transactions Add, edit and filter every \"",
+   "msg": "4 of 4 cards drawn one way (one panel, ground, placement and fragment): copies of one card",
+   "fix": "a card layout at most twice on a page: build the other sections another way",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "card-layout"
+   ],
+   "wheres": [
+    "section#features > div.wrap > div.mt-8.grid \"Transactions Add, edit and filter every \""
+   ]
+  },
+  {
+   "check": "card-layout",
+   "where": "section#family > div.wrap > div.mt-12.grid \"Members DC Dana Cohen Head YC Yossi Cohe\"",
+   "msg": "4 of 4 cards drawn one way (one panel, ground, placement and fragment): copies of one card",
+   "fix": "a card layout at most twice on a page: build the other sections another way",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "card-layout"
+   ],
+   "wheres": [
+    "section#family > div.wrap > div.mt-12.grid \"Members DC Dana Cohen Head YC Yossi Cohe\""
+   ]
+  },
+  {
+   "check": "button-styles",
+   "where": "(one screen)",
+   "msg": "3 button styles on one screen: pill, fill #fa8927 (\"Create a free account\"); soft, fill #191b1d (\"K7PQ-3MZD\", in a mock); soft, fill #fa8927 (\"Approve\", in a mock); the odd one out: \"Approve\"",
+   "fix": "one primary and one secondary button: one shape, one height per size, one label size",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "button-styles"
+   ],
+   "wheres": [
+    "(one screen)"
+   ]
+  },
+  {
+   "check": "copy-headings",
+   "where": "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > h3.text-xl.font-medium \"The bank file import\"",
+   "msg": "\"The bank file import\" names no product, part, place or section (4 headings like it; at most one brand line per page) (and 3 more like it: \"Categories for every row\", \"The dashboard and its ch\", \"The import lane: bank fi\")",
+   "fix": "name the thing in every heading: the product, a part, the place or a section noun",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "copy-headings"
+   ],
+   "wheres": [
+    "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > h3.text-xl.font-medium \"The bank file import\""
+   ]
+  },
+  {
+   "check": "section-gaps",
+   "where": "section#flow / section#questions",
+   "msg": "374px between these sections, +92% against the median 195px",
+   "fix": "use one gap between sections (all within 25% of each other)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-gaps"
+   ],
+   "wheres": [
+    "section#flow / section#questions"
+   ]
+  },
+  {
+   "check": "empty-area",
+   "where": "footer#closing \"Start the household budget this month\"",
+   "msg": "64% of the section is empty: 208px above its first content, 192px of empty rows between its content, 13% beside content that covers under half the container, in its 784px of rows (WARN over 35%, FAIL over 50%)",
+   "fix": "fill the section: a picture or a second column beside the words, or more of its own content; the section stays one or two screens tall (T-height)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "empty-area"
+   ],
+   "wheres": [
+    "footer#closing \"Start the household budget this month\""
+   ]
+  },
+  {
+   "check": "section-height",
+   "where": "footer#closing \"Start the household budget this monthFre\"",
+   "msg": "the section's content does not fit it: its lowest content ends 868px below its top, past 828px (the section less 72px of bottom padding) (SR-2)",
+   "fix": "fit the content above the section's bottom padding (--padb), or make it two screens (.g2) in two groups",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-height"
+   ],
+   "wheres": [
+    "footer#closing \"Start the household budget this monthFre\""
+   ]
+  },
+  {
+   "check": "one-section",
+   "where": "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\"",
+   "msg": "a band: a box 99% of the section wide on a ground of its own that holds the heading or the intro: the section's own ground is the band (SR-4)",
+   "fix": "put every block of <main> in a <section>, and give a band its own section instead of a ground inside one",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "one-section"
+   ],
+   "wheres": [
+    "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "section#hero > div.wrap.flex \"The budget appfor familieswho share mone\"",
+   "msg": "the hero's .wrap holds 2 children, 0 of them .hero-text: one .hero-text and at most one strip (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "section#hero > div.wrap.flex \"The budget appfor familieswho share mone\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "footer#closing \"Start the household budget this monthFre\"",
+   "msg": "the section needs exactly one in-flow child .wrap (it has 1 in-flow child, 0 .wrap) (and 2 more like it: \"Start the household budg\", \"Start the household budg\") (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "footer#closing \"Start the household budget this monthFre\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\"",
+   "msg": "a box runs 8-1432px, outside the container lines of section 8 at 80-1360px: full width is for background layers and grounds only (SR-6)",
+   "fix": "keep it inside the container lines (.wrap): full width is for background layers and grounds only",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "footer#closing > div.flex.flex-1 \"Start the household budget this monthFre\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "footer#closing > div.flex.flex-1 > div.mx-3.flex \"Start the household budget this monthFre\"",
+   "msg": "a box runs 24-1416px, outside the container lines of section 8 at 80-1360px: full width is for background layers and grounds only (SR-6)",
+   "fix": "keep it inside the container lines (.wrap): full width is for background layers and grounds only",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "footer#closing > div.flex.flex-1 > div.mx-3.flex \"Start the household budget this monthFre\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "div.fade-b.mt-12 > div.app-window.flex > div.flex.h-11 > span.text-sm.font-semibold \"Family Budget\"",
+   "msg": "1 text block starts on a left line at x 151, 71px from the container's left: text starts on the container's left, or on one split line (x 623, 732, 841) (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div.fade-b.mt-12 > div.app-window.flex > div.flex.h-11 > span.text-sm.font-semibold \"Family Budget\""
+   ]
+  },
+  {
+   "check": "container-edges",
+   "where": "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > p.mt-2.leading-7 \"Drop the CSV, XLS or XLSX export. The ap\"",
+   "msg": "3 text blocks start on a left line at x 132, 52px from the container's left: text starts on the container's left, or on one split line (x 623, 732, 841) (also \"Every row gets one of the 15 bui\", \"The dashboard shows income again\") (and 2 more like it: x 122, x 586) (SR-6)",
+   "fix": "start the text on the container's left, or on the one split line every split shares",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "ol.flex.flex-col > li.flex.gap-4:nth-of-type(1) > div > p.mt-2.leading-7 \"Drop the CSV, XLS or XLSX export. The ap\""
+   ]
+  },
+  {
+   "check": "row-lines",
+   "where": "div.wrap.flex > div.lit-ground.relative > div.glow-card.absolute > dl.mt-3.grid \"Income+₪24,000Expenses-₪7,213\"",
+   "msg": "a row of 2 items: its first item starts at 812px, its column's left line at 732px; its last item ends at 1080px, its column's right line at 1360px (2px either way) (SR-7)",
+   "fix": "start the row's first item on the container's left line and end its last on the right line, every item one height",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "row-lines"
+   ],
+   "wheres": [
+    "div.wrap.flex > div.lit-ground.relative > div.glow-card.absolute > dl.mt-3.grid \"Income+₪24,000Expenses-₪7,213\""
+   ]
+  },
+  {
+   "check": "split-pair",
+   "where": "section#walkthrough > div.wrap.flex > div.mt-10.grid \"1The bank file importDrop the CSV, XLS o\"",
+   "msg": "the two columns of the split start 193px apart at the top: a split's columns are top-aligned, 8px either way (SR-8)",
+   "fix": "top-align both columns of the split (align-items: start)",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "split-pair"
+   ],
+   "wheres": [
+    "section#walkthrough > div.wrap.flex > div.mt-10.grid \"1The bank file importDrop the CSV, XLS o\""
+   ]
+  },
+  {
+   "check": "split-pair",
+   "where": "div.app-window.flex > div.flex.min-h-0 > div.settle.flex > div.flex.min-h-0 \"DateTitleCategoryAdded byAmount15 Nov 20\"",
+   "msg": "the split's columns are off the page's one pair of lines: its right column starts at x 1039, the first split's at 732; its right column starts at x 1039, on none of the split lines 623 (k=5), 732 (k=6), 841 (k=7) (SR-8)",
+   "fix": "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "split-pair"
+   ],
+   "wheres": [
+    "div.app-window.flex > div.flex.min-h-0 > div.settle.flex > div.flex.min-h-0 \"DateTitleCategoryAdded byAmount15 Nov 20\""
+   ]
+  },
+  {
+   "check": "split-pair",
+   "where": "section#questions > div.wrap > div.grid.grid-cols-1 \"QuestionsWhat people ask before they sta\"",
+   "msg": "the split's columns are off the page's one pair of lines: its right column starts at x 623, the first split's at 732 (SR-8)",
+   "fix": "start every split's right column on one shared line (wrap.left + k x (width + 24) / 12, k 5, 6 or 7; 6 on a place page) and end the left one 24px before it",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "split-pair"
+   ],
+   "wheres": [
+    "section#questions > div.wrap > div.grid.grid-cols-1 \"QuestionsWhat people ask before they sta\""
+   ]
+  },
+  {
+   "check": "empty-visual",
+   "where": "div.grid.gap-4 > div.rounded-xl.border:nth-of-type(5) > div > svg.h-32.w-full",
+   "msg": "the picture shows nothing here: with it hidden the screen looks the same (the picture is there but invisible: faded out, clipped or covered), so the visitor sees only the ground behind it",
+   "fix": "make the visual draw at every width: a picture that loads, an effect that renders, or its still fallback; never an empty frame",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "empty-visual"
+   ],
+   "wheres": [
+    "div.grid.gap-4 > div.rounded-xl.border:nth-of-type(5) > div > svg.h-32.w-full"
+   ]
+  },
+  {
+   "check": "section-gaps",
+   "where": "section#walkthrough / section#features",
+   "msg": "330px between these sections, +84% against the median 179px",
+   "fix": "use one gap between sections (all within 25% of each other)",
+   "widths": [
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "section-gaps"
+   ],
+   "wheres": [
+    "section#walkthrough / section#features"
+   ]
+  },
+  {
+   "check": "edge-left",
+   "where": "#closing div.flex.items-center \"© 2026 Family Budget\"",
+   "msg": "starts at x 1151.2; the lines are 80 and the column starts",
+   "fix": "start it on the .wrap left line",
+   "widths": [
+    1440
+   ],
+   "from": "layout",
+   "ids": [
+    "edge-left"
+   ],
+   "wheres": [
+    "#closing div.flex.items-center \"© 2026 Family Budget\""
+   ]
+  }
+ ],
+ "waived": [
+  {
+   "check": "text-only",
+   "where": "section#questions \"Questions\"",
+   "msg": "the closing section is only text: no picture, icon, mock or effect in it",
+   "fix": "give the section a visual: a photograph that fits, the real icons, or a UI fragment on a ground",
+   "widths": [
+    1440,
+    390
+   ],
+   "from": "consistency",
+   "ids": [
+    "text-only"
+   ],
+   "wheres": [
+    "section#questions \"Questions\""
+   ],
+   "reason": "The FAQ recipe is text by design (answers open, no picture); the closing CTA follows in footer.closing."
+  },
+  {
+   "check": "focus-ring",
+   "where": ".focus-visible\\:outline-none:focus-visible",
+   "msg": "\".focus-visible\\:outline-none:focus-visible\" in the page removes the focus outline and sets nothing in its place",
+   "fix": "keep the kit's :focus-visible ring, or put a change of the same strength (a 2px line in --action) in the rule that removes it",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "focus-ring"
+   ],
+   "wheres": [
+    ".focus-visible\\:outline-none:focus-visible"
+   ],
+   "reason": "The rule comes from shadcn buttons; landing.css restores a 2px outline with a more specific selector (.landing button:focus-visible), verified on Tab."
+  },
+  {
+   "check": "hero-enter",
+   "where": "section#hero",
+   "msg": "the hero does not enter on load: no head line setting html.m-enter (motion.md, The hero's entrance)",
+   "fix": "put data-enter on the hero <section> and keep the head line from starter.html that sets html.m-enter",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "hero-enter"
+   ],
+   "wheres": [
+    "section#hero"
+   ],
+   "reason": "The hero entrance is a GSAP timeline (user asked for GSAP); the kit's motion.js and its m-enter head line are not loaded because the kit has no RTL support."
+  },
+  {
+   "check": "moment-none",
+   "where": "(the page)",
+   "msg": "a software page (--type) deals no moment: every kind carries one, two on a long page (moments.md)",
+   "fix": "deal one (moments.mjs pick --page software) and mount it in its own section",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "moment-none"
+   ],
+   "wheres": [
+    "(the page)"
+   ],
+   "reason": "The page's moments are GSAP ScrollTrigger: the walkthrough section swaps the app view by scroll, and the closing panel opens as an iris (dealt iris-opens), built without the kit's moments.js."
+  },
+  {
+   "check": "container-edges",
+   "where": "div#root \"Skip to contentFamily BudgetProductFeatu\"",
+   "msg": "a <div> at the top of the page, outside header.nav, main, footer.closing and nav.actionbar (SR-6)",
+   "fix": "build the page as header.nav, a main of sections (each one in-flow .wrap plus background layers) and footer.closing",
+   "widths": [
+    1440
+   ],
+   "from": "consistency",
+   "ids": [
+    "container-edges"
+   ],
+   "wheres": [
+    "div#root \"Skip to contentFamily BudgetProductFeatu\""
+   ],
+   "reason": "div#root is React's mount node, which must wrap the whole app; it is not a page block and has no margins of its own."
+  }
+ ],
+ "warnCount": 29,
+ "at": "2026-11-17T06:37:51.797Z",
+ "openTold": true
+}

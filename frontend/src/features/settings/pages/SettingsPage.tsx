@@ -17,11 +17,14 @@ import { useAuth } from '@/features/auth/authStore'
 import { profileSchema, type ProfileFormValues } from '@/features/auth/schemas'
 import { USE_MOCK } from '@/lib/api'
 import { LANGUAGES } from '@/lib/i18n'
+import { THEMES, type Theme } from '@/lib/theme/theme'
+import { useTheme } from '@/lib/theme/ThemeProvider'
 
-/** Settings page: profile name, UI language and account actions. */
+/** Settings page: profile name, UI language, theme and account actions. */
 export default function SettingsPage() {
   const { t, i18n } = useTranslation()
   const { user, setUser, logout } = useAuth()
+  const { theme, setTheme } = useTheme()
   const toMessage = useApiErrorMessage()
 
   const form = useForm<ProfileFormValues>({
@@ -94,6 +97,26 @@ export default function SettingsPage() {
                   {LANGUAGES.map((l) => (
                     <SelectItem key={l.code} value={l.code}>
                       {l.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>{t('settings.theme')}</CardTitle>
+              <CardDescription>{t('settings.themeHint')}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Select value={theme} onValueChange={(v) => setTheme(v as Theme)}>
+                <SelectTrigger className="w-full sm:w-60" aria-label={t('settings.theme')}>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {THEMES.map((th) => (
+                    <SelectItem key={th} value={th}>
+                      {t(`settings.theme_${th}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>

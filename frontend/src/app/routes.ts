@@ -1,6 +1,8 @@
 /** Central list of route paths so links and the router never drift apart. */
 export const ROUTES = {
-  dashboard: '/',
+  /** Public home page. */
+  home: '/',
+  dashboard: '/dashboard',
   transactions: '/transactions',
   scheduled: '/scheduled',
   family: '/family',

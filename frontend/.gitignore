@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# taste-skill checker output (screenshots, Chrome profile, rendered pages); the deal histories and waivers stay tracked
+.taste-skill/chrome-*/
+.taste-skill/consistency/
+.taste-skill/gate/
+.taste-skill/rendered-*.html

@@ -3,12 +3,13 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/heebo";
+@import "@fontsource-variable/outfit";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-    --font-heading: var(--font-sans);
-    /* Geist for Latin text and figures; Heebo covers Hebrew (Geist has no Hebrew glyphs). */
+    /* Outfit (dealt display face) for Latin headlines; Heebo covers Hebrew in both roles (Geist and Outfit have no Hebrew glyphs). */
+    --font-heading: 'Outfit Variable', 'Heebo Variable', system-ui, sans-serif;
     --font-sans: 'Geist Variable', 'Heebo Variable', system-ui, sans-serif;
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
@@ -41,6 +42,14 @@
     --color-card: var(--card);
     --color-foreground: var(--foreground);
     --color-background: var(--background);
+    /* Brand and money roles (not shadcn's hover `accent`). */
+    --color-brand: var(--brand);
+    --color-brand-foreground: var(--brand-foreground);
+    --color-glow: var(--glow);
+    --color-income: var(--income);
+    --color-income-soft: var(--income-soft);
+    --color-expense: var(--expense);
+    --color-expense-soft: var(--expense-soft);
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
     --radius-lg: var(--radius);
@@ -50,28 +59,40 @@
     --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Light: frosted near-white with a blue tint, white cards, blue brand (hue 255).
+ * Dark: near-black ground, cards with a hairline border and an orange glow, orange brand (hue 55).
+ * No hue sits between 270 and 330 (violet) in either mode.
+ */
 :root {
-    /* Cool near-white canvas with white cards on top, so cards read as surfaces without heavy borders. */
-    --background: oklch(0.982 0.004 264);
-    --foreground: oklch(0.21 0.02 264);
+    --background: oklch(0.975 0.008 240);
+    --foreground: oklch(0.2 0.02 255);
     --card: oklch(1 0 0);
-    --card-foreground: oklch(0.21 0.02 264);
+    --card-foreground: oklch(0.2 0.02 255);
     --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.21 0.02 264);
-    /* Brand: indigo. Kept clear of the income green / expense red and the chart blue. */
-    --primary: oklch(0.5 0.2 275);
+    --popover-foreground: oklch(0.2 0.02 255);
+    --primary: oklch(0.52 0.19 255);
     --primary-foreground: oklch(0.99 0 0);
-    --secondary: oklch(0.955 0.012 275);
-    --secondary-foreground: oklch(0.3 0.08 275);
-    --muted: oklch(0.96 0.006 264);
-    --muted-foreground: oklch(0.5 0.02 264);
-    --accent: oklch(0.955 0.02 275);
-    --accent-foreground: oklch(0.36 0.15 275);
+    --secondary: oklch(0.955 0.015 250);
+    --secondary-foreground: oklch(0.32 0.08 255);
+    --muted: oklch(0.955 0.008 240);
+    --muted-foreground: oklch(0.5 0.02 255);
+    --accent: oklch(0.95 0.025 250);
+    --accent-foreground: oklch(0.36 0.15 255);
     --destructive: oklch(0.577 0.215 27.3);
-    --border: oklch(0.915 0.008 264);
-    --input: oklch(0.89 0.01 264);
-    --ring: oklch(0.6 0.17 275);
-    /* Categorical chart slots 1-5 of the validated data-viz palette (fixed order). */
+    --border: oklch(0.91 0.012 245);
+    --input: oklch(0.885 0.015 245);
+    --ring: oklch(0.6 0.17 255);
+    --brand: var(--primary);
+    --brand-foreground: var(--primary-foreground);
+    --glow: oklch(0.6 0.18 255 / 0.18);
+    --glow-strong: oklch(0.6 0.18 255 / 0.35);
+    --card-shadow: 0 1px 2px oklch(0.3 0.04 255 / 0.05), 0 8px 24px -8px oklch(0.3 0.04 255 / 0.1);
+    --income: oklch(0.55 0.15 160);
+    --income-soft: oklch(0.95 0.04 160);
+    --expense: oklch(0.57 0.2 20);
+    --expense-soft: oklch(0.955 0.035 20);
+    /* Categorical chart slots 1-5 (validated order: blue, orange, aqua, yellow, magenta). */
     --chart-1: #2a78d6;
     --chart-2: #eb6834;
     --chart-3: #1baf7a;
@@ -79,48 +100,57 @@
     --chart-5: #e87ba4;
     --radius: 0.75rem;
     --sidebar: oklch(1 0 0);
-    --sidebar-foreground: oklch(0.21 0.02 264);
-    --sidebar-primary: oklch(0.5 0.2 275);
+    --sidebar-foreground: oklch(0.2 0.02 255);
+    --sidebar-primary: oklch(0.52 0.19 255);
     --sidebar-primary-foreground: oklch(0.99 0 0);
-    --sidebar-accent: oklch(0.955 0.025 275);
-    --sidebar-accent-foreground: oklch(0.4 0.17 275);
-    --sidebar-border: oklch(0.915 0.008 264);
-    --sidebar-ring: oklch(0.6 0.17 275);
+    --sidebar-accent: oklch(0.95 0.025 250);
+    --sidebar-accent-foreground: oklch(0.4 0.17 255);
+    --sidebar-border: oklch(0.91 0.012 245);
+    --sidebar-ring: oklch(0.6 0.17 255);
 }
 
 .dark {
-    --background: oklch(0.17 0.01 264);
-    --foreground: oklch(0.97 0.004 264);
-    --card: oklch(0.215 0.012 264);
-    --card-foreground: oklch(0.97 0.004 264);
-    --popover: oklch(0.215 0.012 264);
-    --popover-foreground: oklch(0.97 0.004 264);
-    --primary: oklch(0.68 0.16 275);
-    --primary-foreground: oklch(0.17 0.02 275);
-    --secondary: oklch(0.28 0.03 275);
-    --secondary-foreground: oklch(0.95 0.01 275);
-    --muted: oklch(0.27 0.012 264);
-    --muted-foreground: oklch(0.72 0.015 264);
-    --accent: oklch(0.29 0.04 275);
-    --accent-foreground: oklch(0.92 0.04 275);
+    --background: oklch(0.13 0.005 260);
+    --foreground: oklch(0.96 0.004 80);
+    --card: oklch(0.17 0.006 260);
+    --card-foreground: oklch(0.96 0.004 80);
+    --popover: oklch(0.19 0.006 260);
+    --popover-foreground: oklch(0.96 0.004 80);
+    --primary: oklch(0.74 0.17 55);
+    --primary-foreground: oklch(0.16 0.03 55);
+    --secondary: oklch(0.25 0.012 60);
+    --secondary-foreground: oklch(0.93 0.02 70);
+    --muted: oklch(0.22 0.006 260);
+    --muted-foreground: oklch(0.7 0.012 70);
+    --accent: oklch(0.26 0.03 55);
+    --accent-foreground: oklch(0.9 0.08 65);
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.6 0.15 275);
-    /* Same five hues, stepped for the dark surface. */
-    --chart-1: #3987e5;
-    --chart-2: #d95926;
-    --chart-3: #199e70;
-    --chart-4: #c98500;
-    --chart-5: #d55181;
-    --sidebar: oklch(0.2 0.012 264);
-    --sidebar-foreground: oklch(0.97 0.004 264);
-    --sidebar-primary: oklch(0.68 0.16 275);
-    --sidebar-primary-foreground: oklch(0.17 0.02 275);
-    --sidebar-accent: oklch(0.29 0.04 275);
-    --sidebar-accent-foreground: oklch(0.92 0.04 275);
+    --ring: oklch(0.7 0.16 55);
+    --brand: var(--primary);
+    --brand-foreground: var(--primary-foreground);
+    --glow: oklch(0.74 0.17 55 / 0.22);
+    --glow-strong: oklch(0.74 0.17 55 / 0.45);
+    --card-shadow: 0 0 0 1px oklch(1 0 0 / 0.06), 0 0 40px -12px var(--glow);
+    --income: oklch(0.78 0.15 160);
+    --income-soft: oklch(0.78 0.15 160 / 0.14);
+    /* Rose, not red: it must stay apart from the orange brand. */
+    --expense: oklch(0.75 0.17 350);
+    --expense-soft: oklch(0.75 0.17 350 / 0.14);
+    --chart-1: #e8843a;
+    --chart-2: #3987e5;
+    --chart-3: #2bb586;
+    --chart-4: #e06a9a;
+    --chart-5: #22b2c5;
+    --sidebar: oklch(0.15 0.005 260);
+    --sidebar-foreground: oklch(0.96 0.004 80);
+    --sidebar-primary: oklch(0.74 0.17 55);
+    --sidebar-primary-foreground: oklch(0.16 0.03 55);
+    --sidebar-accent: oklch(0.26 0.03 55);
+    --sidebar-accent-foreground: oklch(0.9 0.08 65);
     --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.6 0.15 275);
+    --sidebar-ring: oklch(0.7 0.16 55);
 }
 
 @layer base {
@@ -132,5 +162,66 @@
     }
   html {
     @apply font-sans;
+    }
+  h1, h2, h3 {
+    font-family: var(--font-heading);
+    }
+}
+
+@layer utilities {
+  /* Card surface: soft shadow in light, hairline + orange glow in dark. */
+  .glow-card {
+    box-shadow: var(--card-shadow);
+    }
+  /* Hover layer (fine pointers only): a linked card lifts 2px, a button steps 1px and presses 1px below rest. */
+  @media (hover: hover) {
+    .card-link {
+      transition: translate 180ms ease-out, box-shadow 180ms ease-out;
+      }
+    .card-link:hover {
+      translate: 0 -2px;
+      box-shadow: var(--card-shadow), 0 12px 24px -12px oklch(0.2 0.02 255 / 0.18);
+      }
+    .btn-step {
+      transition: translate 150ms ease-out, background-color 150ms ease-out, filter 150ms ease-out;
+      }
+    .btn-step:hover {
+      translate: 0 -1px;
+      filter: brightness(0.92);
+      }
+    .btn-step:active {
+      translate: 0 1px;
+      scale: 0.985;
+      transition-duration: 90ms;
+      }
+  }
+  /* Underline that draws from the start edge. */
+  .link-draw {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 150ms ease-out;
+    }
+  [dir="rtl"] .link-draw {
+    background-position: 100% 100%;
+    }
+  .link-draw:hover,
+  .link-draw:focus-visible {
+    background-size: 100% 1px;
+    }
+  .link-draw:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-link, .btn-step, .link-draw {
+    transition: none;
+    }
+  .card-link:hover, .btn-step:hover, .btn-step:active {
+    translate: none;
+    scale: none;
     }
 }

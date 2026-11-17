@@ -18,6 +18,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { useAuth } from '@/features/auth/authStore'
 import { getLanguage } from '@/lib/i18n'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { ThemeToggle } from './ThemeToggle'
 import { NAV_ITEMS } from './navItems'
 import { NavLinkItem } from './Sidebar'
 
@@ -60,6 +61,7 @@ export function TopBar() {
       <BrandMark className="lg:hidden" />
 
       <div className="ms-auto flex items-center gap-1">
+        <ThemeToggle />
         <LanguageSwitcher />
         {user && (
           <DropdownMenu>

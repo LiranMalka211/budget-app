@@ -1,0 +1,27 @@
+[
+  {
+    "check": "hero-enter",
+    "target": "section#hero",
+    "reason": "The hero entrance is a GSAP timeline (user asked for GSAP); the kit's motion.js and its m-enter head line are not loaded because the kit has no RTL support."
+  },
+  {
+    "check": "moment-none",
+    "target": "(the page)",
+    "reason": "The page's moments are GSAP ScrollTrigger: the walkthrough section swaps the app view by scroll, and the closing panel opens as an iris (dealt iris-opens), built without the kit's moments.js."
+  },
+  {
+    "check": "focus-ring",
+    "target": ".focus-visible\\:outline-none:focus-visible",
+    "reason": "The rule comes from shadcn buttons; landing.css restores a 2px outline with a more specific selector (.landing button:focus-visible), verified on Tab."
+  },
+  {
+    "check": "container-edges",
+    "target": "div#root",
+    "reason": "div#root is React's mount node, which must wrap the whole app; it is not a page block and has no margins of its own."
+  },
+  {
+    "check": "text-only",
+    "target": "section#questions",
+    "reason": "The FAQ recipe is text by design (answers open, no picture); the closing CTA follows in footer.closing."
+  }
+]

@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { cn } from 'cn'
+import { ROUTES } from '@/app/routes'
 import { BrandMark } from '@/components/common/BrandMark'
 import { NAV_ITEMS, type NavItem } from './navItems'
 
@@ -10,7 +11,7 @@ export function NavLinkItem({ item, onNavigate }: { item: NavItem; onNavigate?: 
   return (
     <NavLink
       to={item.path}
-      end={item.path === '/'}
+      end={item.path === ROUTES.dashboard}
       onClick={onNavigate}
       className={({ isActive }) =>
         cn(

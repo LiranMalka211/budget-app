@@ -31,7 +31,13 @@
     "openMenu": "Open menu",
     "language": "Language",
     "signedInAs": "Signed in as",
-    "personal": "Personal budget"
+    "personal": "Personal budget",
+    "theme": "Theme",
+    "switchToDark": "Switch to dark mode",
+    "switchToLight": "Switch to light mode",
+    "openApp": "Open the app",
+    "home": "Home",
+    "skipToContent": "Skip to content"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -97,7 +103,7 @@
     "byCategoryHint": "How spending splits across categories",
     "recent": "Recent transactions",
     "upcoming": "Upcoming payments",
-    "latestInsight": "Latest insight",
+    "latestInsights": "Latest insights",
     "viewAll": "View all",
     "noData": "No data for this period yet",
     "ranges": {
@@ -111,7 +117,13 @@
     "otherSlice": "Other",
     "totalSpent": "Total spent",
     "tableView": "Table view",
-    "chartView": "Chart view"
+    "chartView": "Chart view",
+    "greeting": {
+      "morning": "Good morning, {{name}}",
+      "afternoon": "Good afternoon, {{name}}",
+      "evening": "Good evening, {{name}}",
+      "night": "Good night, {{name}}"
+    }
   },
   "transactions": {
     "title": "Transactions",
@@ -210,7 +222,18 @@
     "errors": {
       "key_not_found": "No family matches this key",
       "already_in_family": "You already belong to a family",
-      "head_cannot_leave": "The head of the family cannot leave while other members remain"
+      "head_cannot_leave": "The head of the family cannot leave while other members remain",
+      "head_always_edits": "The head of the family can always edit"
+    },
+    "permissions": {
+      "explain": "Every member can view the budget and add rows. Editing and deleting are for the members the head allows.",
+      "canEdit": "View, add and edit",
+      "addOnly": "View and add",
+      "allowEdit": "Can edit",
+      "allowEditFor": "Allow {{name}} to edit",
+      "granted": "{{name}} can now edit and delete",
+      "revoked": "{{name}} can now only view and add",
+      "addOnlyHint": "You can view and add transactions. Editing or deleting needs permission from the head of the family."
     }
   },
   "import": {
@@ -272,7 +295,12 @@
     "profileSaved": "Profile saved",
     "account": "Account",
     "mockBadge": "Mock data",
-    "mockHint": "The app is running on in-browser demo data. Set VITE_USE_MOCK=false to connect the backend."
+    "mockHint": "The app is running on in-browser demo data. Set VITE_USE_MOCK=false to connect the backend.",
+    "theme": "Appearance",
+    "themeHint": "Light, dark, or follow your device.",
+    "theme_light": "Light",
+    "theme_dark": "Dark",
+    "theme_system": "Same as device"
   },
   "categories": {
     "salary": "Salary",
@@ -296,6 +324,99 @@
     "network": "Cannot reach the server. Check your connection.",
     "unauthorized": "Your session has expired. Please log in again.",
     "forbidden": "You are not allowed to do that.",
-    "notFound": "Not found."
+    "notFound": "Not found.",
+    "editNotAllowed": "You don't have permission to edit. Ask the head of the family."
+  },
+  "landing": {
+    "meta": {
+      "title": "Family Budget – the budget app for families who share money",
+      "description": "One shared ledger for the household: transactions, scheduled payments, bank file import and spending charts, in Hebrew and English."
+    },
+    "nav": {
+      "product": "Product",
+      "features": "Features",
+      "family": "Family",
+      "questions": "Questions",
+      "login": "Log in",
+      "menu": "Menu"
+    },
+    "cta": {
+      "primary": "Create a free account",
+      "secondary": "See the product"
+    },
+    "hero": {
+      "line1": "The budget app",
+      "line2": "for families",
+      "line3": "who share money",
+      "lead": "Every income and expense of the household in one ledger. Import your bank's CSV or Excel file, sort it into categories and see where the money goes.",
+      "fact": "15 built-in categories · Hebrew and English · CSV, XLS and XLSX bank files",
+      "cardTitle": "This month",
+      "cardLeft": "Left to spend",
+      "cardIncome": "Income",
+      "cardExpense": "Expenses"
+    },
+    "product": {
+      "h2": "The transactions ledger, as it is in the app",
+      "lead": "Each row is one income or expense with its date, category and who added it. Open a row to change its category, amount or note.",
+      "link": "How the family ledger works"
+    },
+    "walkthrough": {
+      "h2": "The path from a bank file to a budget",
+      "step1Title": "The bank file import",
+      "step1Body": "Drop the CSV, XLS or XLSX export. The app finds the header row, maps date, description, debit and credit, and skips rows you already have.",
+      "step2Title": "Categories for every row",
+      "step2Body": "Every row gets one of the 15 built-in categories or one you create. Edit mode changes category, amount and note across many rows and saves them together.",
+      "step3Title": "The dashboard and its charts",
+      "step3Body": "The dashboard shows income against expenses by month and a pie of spending by category for any date range."
+    },
+    "features": {
+      "h2": "What the app does",
+      "lead": "Four parts, one ledger.",
+      "transactionsTitle": "Transactions",
+      "transactionsBody": "Add, edit and filter every income and expense by date, type, category and text. Twenty rows a page, newest first.",
+      "scheduledTitle": "Scheduled payments",
+      "scheduledBody": "Rent, salary, insurance: set the day and the interval once. Each occurrence is written to the ledger when it is due, and it can be paused.",
+      "importTitle": "File import",
+      "importBody": "CSV, XLS and XLSX exports from a bank or credit card, including HTML pages saved as .xls. Rows you already have are skipped.",
+      "insightsTitle": "Monthly insights",
+      "insightsBody": "An analysis compares this month with the last one and writes three or four concrete recommendations about the categories that grew."
+    },
+    "family": {
+      "h2": "One ledger for the whole family",
+      "lead": "The head of the family creates it and shares an invite key. A member's request waits until it is approved; then their transactions join the family's.",
+      "membersTitle": "Members",
+      "head": "Head",
+      "member": "Member",
+      "pending": "Pending",
+      "addedByTitle": "Every row says who added it",
+      "addedBy": "Added by"
+    },
+    "flow": {
+      "h2": "The import lane: bank file to dashboard chart",
+      "lead": "Nothing is retyped. The file you download from the bank is read in the browser, you confirm the columns and the categories, and the ledger and the charts update from the same rows.",
+      "node1": "Bank file",
+      "node2": "Import",
+      "node3": "Categories",
+      "node4": "Dashboard"
+    },
+    "faq": {
+      "h2": "Questions",
+      "lead": "What people ask before they start.",
+      "q1": "Which languages does it support?",
+      "a1": "Hebrew and English. Hebrew flips the whole layout to right-to-left; numbers and dates follow the language.",
+      "q2": "Which bank files can I import?",
+      "a2": "CSV, XLS and XLSX. Many Israeli banks export an HTML page named .xls; those are read too.",
+      "q3": "Can my partner see my transactions?",
+      "a3": "Only after you create a family and approve their request. Until then every account is private.",
+      "q4": "What happens to my data when I leave a family?",
+      "a4": "Your own transactions and scheduled payments go back to your account.",
+      "q5": "Can I pause a scheduled payment?",
+      "a5": "Yes. Pause and resume it from the scheduled payments page; entries already written stay in the ledger."
+    },
+    "closing": {
+      "h2": "Start the household budget this month",
+      "terms": "Free account. Hebrew and English.",
+      "rights": "Family Budget"
+    }
   }
 }

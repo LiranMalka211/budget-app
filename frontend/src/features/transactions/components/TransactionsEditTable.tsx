@@ -38,7 +38,7 @@ function AmountInput({ tx, value, onChange }: { tx: Transaction; value: string; 
       aria-label={`${t('common.amount')}: ${tx.title}`}
       aria-invalid={invalid || undefined}
       title={invalid ? t('validation.positiveAmount') : undefined}
-      className={cn('h-9 text-end tabular-nums', isIncome(tx.typeId) ? 'text-emerald-700' : 'text-rose-700')}
+      className={cn('h-9 text-end tabular-nums', isIncome(tx.typeId) ? 'text-income' : 'text-expense')}
     />
   )
 }

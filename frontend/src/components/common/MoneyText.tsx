@@ -19,7 +19,7 @@ export function MoneyText({ amount, isIncome, className }: MoneyTextProps) {
     <span
       className={cn(
         'tabular-nums font-medium',
-        isIncome ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400',
+        isIncome ? 'text-income' : 'text-expense',
         className,
       )}
     >

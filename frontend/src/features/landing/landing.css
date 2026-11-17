@@ -1,0 +1,203 @@
+/* Landing page layout: one container, one section per screen, the hero's lit ground. Tokens come from index.css. */
+
+.landing {
+  --nav: 64px;
+  --h1: 64px;
+  --h2: 40px;
+}
+
+.landing {
+  --gut: 64px;
+}
+/* One container on every section (the kit's .wrap): equal margins, 1280 wide at most. */
+.landing .wrap {
+  width: min(100% - 2 * var(--gut), 1280px);
+  margin-inline: auto;
+}
+
+/*
+ * A section is at least --h screens tall and grows with its content, so nothing ever lies on the next section.
+ * On screens large enough for every section's content (>= 1024 x 860) it is exactly --h screens.
+ * The hero is always exactly one screen; its picture takes whatever height is left.
+ */
+.landing .screen {
+  position: relative;
+  min-height: calc(var(--h, 1) * 100svh);
+  padding-top: calc(var(--nav) + 56px);
+  padding-bottom: 48px;
+}
+@media (min-width: 1024px) and (min-height: 860px) {
+  .landing .screen {
+    height: calc(var(--h, 1) * 100svh);
+  }
+}
+.landing .screen {
+  display: flex;
+  flex-direction: column;
+}
+.landing .screen > .wrap {
+  flex: 1 0 auto;
+}
+@media (min-width: 1024px) and (min-height: 860px) {
+  .landing .screen > .wrap {
+    flex: 1 1 0;
+    min-height: 0;
+  }
+}
+/* The hero is the first screen; on a screen too small for its words it grows instead of covering the next section. */
+.landing .screen.hero {
+  height: auto;
+  min-height: 100svh;
+}
+@media (min-width: 1024px) and (min-height: 860px) {
+  .landing .screen.hero {
+    height: 100svh;
+  }
+}
+
+.landing h1 {
+  font-size: var(--h1);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  font-weight: 500;
+}
+
+.landing h2 {
+  font-size: var(--h2);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  font-weight: 500;
+}
+
+/* The lit ground behind the hero's window: a soft brand light in the top corner (blue in light, orange in dark). */
+.lit-ground {
+  background:
+    radial-gradient(120% 90% at 20% 0%, var(--glow-strong), transparent 60%),
+    radial-gradient(80% 60% at 100% 100%, var(--glow), transparent 70%),
+    var(--muted);
+}
+
+.dark .lit-ground {
+  background:
+    radial-gradient(110% 80% at 25% 0%, var(--glow-strong), transparent 62%),
+    radial-gradient(70% 50% at 100% 100%, var(--glow), transparent 70%),
+    oklch(0.15 0.008 60);
+}
+
+/* One app window: card surface, hairline, the dark mode's glow. */
+.app-window {
+  background: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 48px -24px oklch(0.2 0.03 255 / 0.25);
+  overflow: hidden;
+}
+
+.dark .app-window {
+  box-shadow: 0 0 0 1px oklch(1 0 0 / 0.06), 0 0 80px -20px var(--glow-strong);
+}
+
+/* Fade the bottom of a cut window so rows run out under it instead of ending on a hard line. */
+.fade-b {
+  mask-image: linear-gradient(to bottom, black 78%, transparent 100%);
+}
+
+/* A view swapped in by scroll or load settles in 200ms; nothing moves under reduced motion. */
+@keyframes landing-settle {
+  from { opacity: 0; translate: 0 6px; }
+  to { opacity: 1; translate: 0 0; }
+}
+.settle {
+  animation: landing-settle 200ms ease-out both;
+}
+
+/* Diagram pulses run along the lines; the lines and nodes stay. */
+@keyframes landing-pulse {
+  from { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { offset-distance: 100%; opacity: 0; }
+}
+.pulse {
+  offset-path: path('M 0 0 L 100 0');
+  animation: landing-pulse 2.8s linear infinite;
+}
+
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .landing {
+    --h1: 50px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .landing {
+    --h1: 48px;
+    --h2: 32px;
+  }
+  .landing .screen {
+    padding-top: calc(var(--nav) + 40px);
+  }
+}
+
+/* Phones: sections are measured against the large viewport and use --hm (their phone screen count). */
+@media (max-width: 639px) {
+  .landing .screen {
+    min-height: calc(var(--hm, 1) * 100lvh);
+  }
+  .landing .screen.hero {
+    min-height: 100lvh;
+  }
+}
+
+@media (max-width: 767px) {
+  .landing {
+    --nav: 56px;
+    --h1: 39px;
+    --h2: 28px;
+  }
+  .landing {
+    --gut: 24px;
+  }
+  .landing .screen {
+    padding-top: calc(var(--nav) + 32px);
+    padding-bottom: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settle,
+  .pulse {
+    animation: none;
+  }
+  .pulse {
+    opacity: 0;
+  }
+}
+
+/* Focus: a 2px outline in the action colour, 2px off the control; never animated. */
+.landing a:focus-visible,
+.landing button:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/*
+ * The closing slab is inset 8px from the window and its panel another 12px (16px from 640): their containers
+ * add those insets back so every line of the footer sits on the page's own margin lines.
+ */
+.landing footer.closing {
+  padding-inline: 8px;
+  padding-bottom: 8px;
+}
+.landing .closing-inner-slab {
+  width: min(100% + 16px - 2 * var(--gut), 1280px);
+}
+.landing .closing-inner-panel {
+  width: min(100% + 40px - 2 * var(--gut), 1280px);
+}
+@media (min-width: 640px) {
+  .landing .closing-inner-panel {
+    width: min(100% + 48px - 2 * var(--gut), 1280px);
+  }
+}

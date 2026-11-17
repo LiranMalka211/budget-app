@@ -1,22 +1,19 @@
 /**
- * Chart colour roles. Series colours are the first two validated categorical slots of the
- * reference data-viz palette (adjacent-pair CVD ΔE and contrast checked against a white surface);
- * chrome colours are hairline greys so the data stays the loudest thing on the card.
+ * Chart colour roles, all as theme tokens so light and dark mode re-step them (see index.css).
+ * Recharts writes them as SVG presentation attributes, where `var()` resolves like any other CSS.
  */
 export const CHART = {
-  /** Slot 1 (blue): income. */
-  income: '#2a78d6',
-  /** Slot 2 (orange): expense. */
-  expense: '#eb6834',
+  income: 'var(--income)',
+  expense: 'var(--expense)',
   /** Single-hue colour for ranked magnitude bars. */
-  magnitude: '#2a78d6',
-  /** Categorical slots 1-5 in fixed order (theme tokens, so dark mode steps them); validated as a set. */
+  magnitude: 'var(--brand)',
+  /** Categorical slots 1-5 in fixed order; validated as a set for each mode. */
   categorical: ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)'],
   /** Neutral for the folded "Other" part: a gray, never a sixth hue. */
-  other: '#b8b7b0',
-  grid: '#e1e0d9',
-  axis: '#c3c2b7',
-  tick: '#898781',
+  other: 'var(--muted-foreground)',
+  grid: 'var(--border)',
+  axis: 'var(--border)',
+  tick: 'var(--muted-foreground)',
   /** Card surface; used for the 2px gap between pie slices. */
   surface: 'var(--card)',
 } as const
