@@ -1,0 +1,71 @@
+# Render Blueprint: the API (Docker, free plan) and the web app (static site, free).
+# The database is not here: it lives on Neon (free, never expires); paste its URL as DATABASE_URL when asked.
+# Step by step: docs/deploy-render.md
+#
+# The two addresses below assume Render gives each service its own name as the subdomain. If a name is taken,
+# Render adds a suffix (e.g. family-budget-api-x7k2.onrender.com): then update VITE_API_HOST on the web app and
+# FRONTEND_URL / CORS_ORIGINS on the API in the dashboard, and redeploy.
+
+services:
+  - type: web
+    name: family-budget-api
+    runtime: docker
+    plan: free
+    region: frankfurt
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /api/health
+    buildFilter:
+      paths:
+        - backend/**
+    envVars:
+      - key: PORT
+        value: "8000"
+      - key: APP_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false # Neon connection string, asked for when the Blueprint is created
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://family-budget-web.onrender.com
+      - key: CORS_ORIGINS
+        value: https://family-budget-web.onrender.com
+      - key: ANTHROPIC_API_KEY
+        sync: false # optional; leave empty for the free rule-based insights
+      - key: SMTP_HOST
+        sync: false # optional; needed only for password-reset emails
+      - key: SMTP_PORT
+        value: "587"
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM
+        sync: false
+
+  - type: web
+    name: family-budget-web
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    buildFilter:
+      paths:
+        - frontend/**
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: VITE_USE_MOCK
+        value: "false"
+      - key: VITE_API_HOST
+        value: family-budget-api.onrender.com
+    headers:
+      - path: /assets/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      # Single-page app: every path that is not a file is served the app shell.
+      - type: rewrite
+        source: /*
+        destination: /index.html

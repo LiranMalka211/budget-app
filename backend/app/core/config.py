@@ -1,6 +1,13 @@
 from functools import lru_cache
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _with_scheme(value: str) -> str:
+    """"example.onrender.com" -> "https://example.onrender.com"; values that already have a scheme are kept."""
+    value = value.strip()
+    return value if not value or "://" in value else f"https://{value}"
 
 
 class Settings(BaseSettings):
@@ -27,10 +34,29 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-opus-5-5"
 
+    @field_validator("database_url")
+    @classmethod
+    def _use_psycopg_driver(cls, url: str) -> str:
+        """
+        Hosted Postgres (Neon, Render, Heroku-style) hands out "postgres://" or "postgresql://" URLs, which SQLAlchemy
+        would open with psycopg2; this app ships psycopg 3, so point those at it. Query options such as
+        sslmode=require are kept.
+        """
+        for prefix in ("postgres://", "postgresql://"):
+            if url.startswith(prefix):
+                return "postgresql+psycopg://" + url[len(prefix):]
+        return url
+
+    @field_validator("frontend_url")
+    @classmethod
+    def _frontend_url_scheme(cls, url: str) -> str:
+        """Accepts a bare host (what a Render blueprint provides) and makes it an https URL."""
+        return _with_scheme(url)
+
     @property
     def cors_origin_list(self) -> list[str]:
-        """CORS_ORIGINS split into a list of origins."""
-        return [v.strip() for v in self.cors_origins.split(",") if v.strip()]
+        """CORS_ORIGINS split into a list of origins; bare hosts become https origins."""
+        return [_with_scheme(v.strip()).rstrip("/") for v in self.cors_origins.split(",") if v.strip()]
 
     @property
     def is_development(self) -> bool:

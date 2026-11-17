@@ -22,8 +22,14 @@ export function setToken(token: string | null): void {
   }
 }
 
-/** Base URL of the backend, from .env. */
-const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:8000/api'
+/**
+ * Base URL of the backend, from .env. VITE_API_HOST (a bare host such as "budget-api.onrender.com", which is what
+ * Render hands a blueprint) wins over VITE_API_URL and becomes "https://<host>/api".
+ */
+const API_HOST = (import.meta.env.VITE_API_HOST as string | undefined)?.trim()
+const BASE_URL = API_HOST
+  ? `https://${API_HOST.replace(/^https?:\/\//, '').replace(/\/+$/, '')}/api`
+  : ((import.meta.env.VITE_API_URL as string | undefined) ?? 'http://localhost:8000/api')
 
 /** Builds a query string from an object, skipping empty values. */
 export function toQuery(params: Record<string, string | number | undefined | null>): string {
