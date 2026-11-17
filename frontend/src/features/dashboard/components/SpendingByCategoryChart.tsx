@@ -1,7 +1,7 @@
 import { PieChart as PieIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import { Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 import { cn } from 'cn'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { useCategoryLabel } from '@/hooks/useLookups'
@@ -9,8 +9,7 @@ import { formatMoney } from '@/lib/format/money'
 import { useLocale } from '@/lib/i18n/useDirection'
 import type { CategoryTotal } from '@/types'
 import { ChartCard } from './ChartCard'
-import { CHART } from './chartTheme'
-import { ChartTooltip } from './ChartTooltip'
+import { CAN_HOVER, CHART } from './chartTheme'
 
 interface SpendingByCategoryChartProps {
   data: CategoryTotal[]
@@ -30,17 +29,14 @@ const MAX_SLICES = CHART.categorical.length
 /** The built-in catch-all category always joins the "Other" slice instead of taking a hue. */
 const OTHER_CATEGORY_ID = 'cat_other_expense'
 
-interface TooltipPayload {
-  active?: boolean
-  payload?: ReadonlyArray<{ payload?: unknown }>
-}
-
 const percent = (share: number) => `${Math.round(share * 100)}%`
+
 
 /**
  * Pie (donut) of expenses by category: the largest categories as slices in fixed palette order,
- * the rest folded into a gray "Other", the period total in the centre, and a list of names,
- * shares and amounts beside it so exact figures never depend on reading angles.
+ * the rest folded into a gray "Other", and a list of names, shares and amounts beside it so exact figures never
+ * depend on reading angles. The centre shows the period total, or the hovered / tapped slice: there is no
+ * floating tooltip, which used to cover the centre label.
  */
 export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryChartProps) {
   const { t } = useTranslation()
@@ -66,12 +62,11 @@ export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryCh
     return { slices: result, total: sum }
   }, [data, categoryLabel, t])
 
-  /** Tooltip for the hovered slice: amount, with the share in the title. */
-  const renderTooltip = ({ active: on, payload }: TooltipPayload) => {
-    const datum = payload?.[0]?.payload as Slice | undefined
-    if (!on || !datum) return null
-    return <ChartTooltip title={`${datum.name} · ${percent(datum.share)}`} rows={[{ label: t('common.expense'), value: datum.total, color: datum.color }]} />
-  }
+  const focused = slices.find((s) => s.key === active) ?? null
+  const whole = (n: number) => formatMoney(n, locale, undefined, { maximumFractionDigits: 0 })
+  /** Hover (mouse) previews a slice; tap (touch) toggles it. */
+  const hover = (key: string | null) => CAN_HOVER && setActive(key)
+  const toggle = (key: string) => !CAN_HOVER && setActive((cur) => (cur === key ? null : key))
 
   return (
     <ChartCard
@@ -116,25 +111,41 @@ export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryCh
                 stroke={CHART.surface}
                 strokeWidth={2}
                 isAnimationActive={false}
-                onMouseEnter={(_, i) => setActive(slices[i]?.key ?? null)}
-                onMouseLeave={() => setActive(null)}
+                onMouseEnter={(_, i) => hover(slices[i]?.key ?? null)}
+                onMouseLeave={() => hover(null)}
+                onClick={(_, i) => slices[i] && toggle(slices[i].key)}
               >
                 {slices.map((s) => (
                   <Cell
                     key={s.key}
                     fill={s.color}
                     fillOpacity={active && active !== s.key ? 0.35 : 1}
-                    style={{ transition: 'fill-opacity 150ms ease-out', outline: 'none' }}
+                    style={{ transition: 'fill-opacity 150ms ease-out', outline: 'none', cursor: 'pointer' }}
                   />
                 ))}
               </Pie>
-              <Tooltip content={renderTooltip} cursor={false} />
             </PieChart>
           </ResponsiveContainer>
-          {/* Period total in the hole; HTML so it uses the app font and wraps safely. */}
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-muted-foreground">{t('dashboard.totalSpent')}</span>
-            <span className="text-lg font-semibold tracking-tight tabular-nums">{formatMoney(total, locale, undefined, { maximumFractionDigits: 0 })}</span>
+          {/* The hole: the period total, or the focused slice. HTML so it uses the app font and stays inside the ring. */}
+          <div
+            className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-9 text-center"
+            aria-live="polite"
+          >
+            {focused ? (
+              <>
+                <span className="flex max-w-full items-center gap-1.5 text-xs text-muted-foreground">
+                  <span className="size-2 shrink-0 rounded-full" style={{ background: focused.color }} aria-hidden />
+                  <span className="truncate">{focused.name}</span>
+                </span>
+                <span className="text-lg font-semibold tracking-tight tabular-nums">{whole(focused.total)}</span>
+                <span className="text-xs text-muted-foreground tabular-nums">{t('dashboard.shareOfSpending', { pct: percent(focused.share) })}</span>
+              </>
+            ) : (
+              <>
+                <span className="text-xs text-muted-foreground">{t('dashboard.totalSpent')}</span>
+                <span className="text-lg font-semibold tracking-tight tabular-nums">{whole(total)}</span>
+              </>
+            )}
           </div>
         </div>
 
@@ -142,10 +153,12 @@ export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryCh
           {slices.map((s) => (
             <li
               key={s.key}
-              onMouseEnter={() => setActive(s.key)}
-              onMouseLeave={() => setActive(null)}
+              onMouseEnter={() => hover(s.key)}
+              onMouseLeave={() => hover(null)}
+              onClick={() => toggle(s.key)}
               className={cn(
-                'flex items-center gap-2.5 rounded-md px-1.5 py-1.5 text-sm transition-opacity duration-150',
+                'flex cursor-pointer items-center gap-2.5 rounded-md px-1.5 py-1.5 text-sm transition-opacity duration-150',
+                active === s.key && 'bg-muted',
                 active && active !== s.key && 'opacity-50',
               )}
             >
@@ -154,7 +167,7 @@ export function SpendingByCategoryChart({ data, fetching }: SpendingByCategoryCh
                 {s.name}
               </span>
               <span className="w-9 shrink-0 text-end text-xs text-muted-foreground tabular-nums">{percent(s.share)}</span>
-              <span className="w-[4.5rem] shrink-0 text-end font-medium tabular-nums">{formatMoney(s.total, locale, undefined, { maximumFractionDigits: 0 })}</span>
+              <span className="w-[4.5rem] shrink-0 text-end font-medium tabular-nums">{whole(s.total)}</span>
             </li>
           ))}
         </ul>

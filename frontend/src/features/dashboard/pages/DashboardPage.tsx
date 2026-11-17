@@ -6,6 +6,8 @@ import { PageHeader } from '@/components/common/PageHeader'
 import { useAuth } from '@/features/auth/authStore'
 import { BalanceCards } from '../components/BalanceCards'
 import { CashflowChart } from '../components/CashflowChart'
+import { FixedVsVariableCard } from '../components/FixedVsVariableCard'
+import { MonthBudgetCard } from '../components/MonthBudgetCard'
 import { LatestInsights, RecentTransactions, UpcomingScheduled } from '../components/DashboardLists'
 import { RangeSelect } from '../components/RangeSelect'
 import { SpendingByCategoryChart } from '../components/SpendingByCategoryChart'
@@ -45,8 +47,18 @@ export default function DashboardPage() {
               totalIncome={query.data.totalIncome}
               totalExpense={query.data.totalExpense}
               balance={query.data.balance}
+              from={range.from}
+              to={range.to}
               fetching={fetching}
             />
+            <div className="grid gap-6 lg:grid-cols-2">
+              <MonthBudgetCard budget={query.data.monthBudget} />
+              <FixedVsVariableCard
+                fixed={query.data.fixedExpense}
+                variable={query.data.variableExpense}
+                fetching={fetching}
+              />
+            </div>
             <div className="grid gap-6 lg:grid-cols-2">
               <SpendingByCategoryChart data={query.data.byCategory} fetching={fetching} />
               <CashflowChart data={query.data.byMonth} fetching={fetching} />

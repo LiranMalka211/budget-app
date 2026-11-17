@@ -5,6 +5,7 @@ import type {
   CommitImportInput,
   CreateCategoryInput,
   DashboardSummary,
+  MonthBudget,
   Family,
   FamilyOverview,
   ImportResult,
@@ -102,5 +103,7 @@ export interface ApiContract {
   dashboard: {
     /** GET /dashboard/summary?from&to */
     summary(from: string, to: string): Promise<DashboardSummary>
+    /** PUT /dashboard/savings-goal. Null removes the goal. Needs edit permission in a family. */
+    setSavingsGoal(amount: number | null): Promise<MonthBudget>
   }
 }

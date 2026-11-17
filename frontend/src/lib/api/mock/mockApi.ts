@@ -1,4 +1,4 @@
-import { addMonths, isAfter, isBefore, parseISO, subMonths } from 'date-fns'
+import { startOfMonth, endOfMonth, addMonths, isAfter, isBefore, parseISO, subMonths } from 'date-fns'
 import type {
   AiInsight,
   Category,
@@ -7,6 +7,7 @@ import type {
   FamilyMember,
   FamilyOverview,
   ImportBatch,
+  MonthBudget,
   MonthlyTotal,
   ScheduledTransaction,
   ScheduledTransactionInput,
@@ -20,7 +21,7 @@ import { monthRange, toIsoDate, todayIso } from '@/lib/format/dates'
 import { newId, newInviteKey } from '@/lib/utils/id'
 import type { ApiContract } from '../contract'
 import { getToken, setToken } from '../httpClient'
-import { firstRunDate, materializeDueSchedules } from './scheduler'
+import { firstRunDate, materializeDueSchedules, nextRunAfter } from './scheduler'
 import {
   DEFAULT_EXPENSE_CATEGORY_ID,
   DEFAULT_INCOME_CATEGORY_ID,
@@ -50,6 +51,8 @@ interface MockDb {
   scheduled: ScheduledTransaction[]
   insights: AiInsight[]
   imports: ImportBatch[]
+  /** Monthly savings goal per budget owner: a family id, or a user id for a personal budget. */
+  goals?: Record<string, number | null>
   /** token -> userId */
   sessions: Record<string, string>
   /** resetToken -> userId */
@@ -298,6 +301,38 @@ function mayEdit(user: StoredUser): boolean {
   if (family?.headUserId === user.id) return true
   const link = d.members.find((m) => m.userId === user.id && m.familyId === user.familyId)
   return Boolean(link && link.status === 'approved' && link.canEdit)
+}
+
+/** Same as the server's month budget: this month against the goal, with scheduled items still due set aside. */
+function monthBudgetFor(user: StoredUser): MonthBudget {
+  const d = getDb()
+  const now = new Date()
+  const start = toIsoDate(startOfMonth(now))
+  const end = toIsoDate(endOfMonth(now))
+  const month = visibleTransactions(user).filter((t) => t.date >= start && t.date <= end)
+  const income = month.filter((t) => t.typeId === TYPE_INCOME_ID).reduce((s, t) => s + t.amount, 0)
+  const expense = month.filter((t) => t.typeId === TYPE_EXPENSE_ID).reduce((s, t) => s + t.amount, 0)
+  let expectedIncome = 0
+  let upcomingFixed = 0
+  for (const s of visibleScheduled(user).filter((x) => x.isActive)) {
+    for (let run = s.nextRunDate; run <= end && (!s.endDate || run <= s.endDate); run = nextRunAfter(run, s)) {
+      if (run < start) continue
+      if (s.typeId === TYPE_INCOME_ID) expectedIncome += s.amount
+      else upcomingFixed += s.amount
+    }
+  }
+  const goal = d.goals?.[user.familyId ?? user.id] ?? null
+  const spendable = income + expectedIncome - (goal ?? 0)
+  return {
+    month: start.slice(0, 7),
+    goal,
+    income,
+    expectedIncome,
+    expense,
+    upcomingFixed,
+    spendable,
+    leftToSpend: spendable - expense - upcomingFixed,
+  }
 }
 
 /** Throws the server's 403 when the user may not edit. */
@@ -745,6 +780,9 @@ export const mockApi: ApiContract = {
       const txs = all.filter((t) => t.date >= from && t.date <= to)
       const totalIncome = txs.filter((t) => t.typeId === TYPE_INCOME_ID).reduce((s, t) => s + t.amount, 0)
       const totalExpense = txs.filter((t) => t.typeId === TYPE_EXPENSE_ID).reduce((s, t) => s + t.amount, 0)
+      const fixedExpense = txs
+        .filter((t) => t.typeId === TYPE_EXPENSE_ID && t.source === 'scheduled')
+        .reduce((s, t) => s + t.amount, 0)
 
       const catMap = new Map<string, number>()
       txs.filter((t) => t.typeId === TYPE_EXPENSE_ID).forEach((t) => catMap.set(t.categoryId, (catMap.get(t.categoryId) ?? 0) + t.amount))
@@ -792,7 +830,19 @@ export const mockApi: ApiContract = {
         recentTransactions,
         upcomingScheduled,
         latestInsights,
+        fixedExpense,
+        variableExpense: totalExpense - fixedExpense,
+        monthBudget: monthBudgetFor(user),
       } satisfies DashboardSummary
+    },
+    async setSavingsGoal(amount) {
+      await delay()
+      const user = currentUser()
+      requireEdit(user)
+      const d = getDb()
+      d.goals = { ...(d.goals ?? {}), [user.familyId ?? user.id]: amount === null ? null : Math.round(amount * 100) / 100 }
+      saveDb(d)
+      return monthBudgetFor(user)
     },
   },
 }

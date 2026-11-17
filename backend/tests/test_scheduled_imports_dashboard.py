@@ -153,3 +153,43 @@ def test_insights_rule_based_without_api_key(client):
     assert len(latest) == len(created)
     assert {i["language"] for i in latest} == {"en", "he"}
     assert not {i["id"] for i in latest} & {i["id"] for i in created}
+
+
+def test_fixed_vs_variable_and_savings_goal(client):
+    """Scheduled expenses count as fixed; the savings goal shapes this month's left-to-spend bar."""
+    headers = register(client, "goal@example.com")
+    today = date.today().isoformat()
+    client.post(
+        "/api/transactions",
+        json={"date": today, "title": "Salary", "amount": 10000, "typeId": "type_income", "categoryId": "cat_salary"},
+        headers=headers,
+    )
+    client.post(
+        "/api/transactions",
+        json={"date": today, "title": "Food", "amount": 1500, "typeId": "type_expense", "categoryId": "cat_groceries"},
+        headers=headers,
+    )
+    # Starts today, so it runs at once and becomes a fixed (scheduled) expense.
+    sched = client.post(
+        "/api/scheduled-transactions",
+        json={"title": "Rent", "amount": 4000, "typeId": "type_expense", "categoryId": "cat_rent",
+              "interval": "monthly", "dayOfMonth": date.today().day, "startDate": today},
+        headers=headers,
+    )
+    assert sched.status_code == 201, sched.text
+
+    params = {"from": today[:8] + "01", "to": "2030-12-31"}
+    body = client.get("/api/dashboard/summary", params=params, headers=headers).json()
+    assert body["fixedExpense"] == 4000 and body["variableExpense"] == 1500
+    mb = body["monthBudget"]
+    assert mb["goal"] is None and mb["income"] == 10000 and mb["expense"] == 5500
+    assert mb["upcomingFixed"] == 0, "next month's rent is not set aside this month"
+    assert mb["spendable"] == 10000 and mb["leftToSpend"] == 4500
+
+    res = client.put("/api/dashboard/savings-goal", json={"amount": 3000}, headers=headers)
+    assert res.status_code == 200, res.text
+    assert res.json()["goal"] == 3000 and res.json()["spendable"] == 7000 and res.json()["leftToSpend"] == 1500
+    assert client.get("/api/dashboard/summary", params=params, headers=headers).json()["monthBudget"]["goal"] == 3000
+
+    assert client.put("/api/dashboard/savings-goal", json={"amount": -5}, headers=headers).status_code == 422
+    assert client.put("/api/dashboard/savings-goal", json={"amount": None}, headers=headers).json()["goal"] is None

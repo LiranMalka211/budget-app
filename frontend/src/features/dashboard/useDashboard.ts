@@ -1,4 +1,4 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { dashboardApi } from './dashboardApi'
 
 /** Query key for the dashboard summary; other features invalidate `['dashboard']` when data changes. */
@@ -12,5 +12,14 @@ export function useDashboardSummary(from: string, to: string) {
     queryKey: dashboardKeys.summary(from, to),
     queryFn: () => dashboardApi.summary(from, to),
     placeholderData: keepPreviousData,
+  })
+}
+
+/** Saves the monthly savings goal and refreshes the dashboard. */
+export function useSetSavingsGoal() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (amount: number | null) => dashboardApi.setSavingsGoal(amount),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['dashboard'] }),
   })
 }

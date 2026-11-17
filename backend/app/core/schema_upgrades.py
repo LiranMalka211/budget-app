@@ -13,6 +13,11 @@ def apply_schema_upgrades(engine: Engine) -> None:
             conn.execute(text("ALTER TABLE ai_insights ADD COLUMN language VARCHAR(5) NOT NULL DEFAULT 'en'"))
             conn.execute(text("CREATE INDEX IF NOT EXISTS ix_ai_insights_language ON ai_insights (language)"))
 
+    for table in ("families", "users"):
+        if "savings_goal" not in {c["name"] for c in inspect(engine).get_columns(table)}:
+            with engine.begin() as conn:
+                conn.execute(text(f"ALTER TABLE {table} ADD COLUMN savings_goal NUMERIC(12, 2)"))
+
     member_columns = {c["name"] for c in inspect(engine).get_columns("family_members")}
     if "can_edit" not in member_columns:
         with engine.begin() as conn:

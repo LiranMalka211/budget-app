@@ -1,6 +1,8 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, String, false
+from decimal import Decimal
+
+from sqlalchemy import Boolean, DateTime, ForeignKey, Numeric, String, false
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -17,6 +19,8 @@ class Family(Base):
     name: Mapped[str] = mapped_column(String(120))
     invite_key: Mapped[str] = mapped_column(String(20), unique=True, index=True)
     head_user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"))
+    # How much the family wants left over at the end of each month; None when no goal is set.
+    savings_goal: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 

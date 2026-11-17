@@ -1,7 +1,10 @@
-import { ArrowDownRight, ArrowUpRight, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
+import { ArrowDownRight, ArrowUpRight, ChevronLeft, TrendingDown, TrendingUp, Wallet } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import { ROUTES } from '@/app/routes'
 import { cn } from 'cn'
 import { Card, CardContent } from '@/components/ui/card'
+import { useTypeHelpers } from '@/hooks/useLookups'
 import { formatMoney } from '@/lib/format/money'
 import { useLocale } from '@/lib/i18n/useDirection'
 
@@ -9,13 +12,35 @@ interface BalanceCardsProps {
   totalIncome: number
   totalExpense: number
   balance: number
+  /** The dashboard's range; when given, the income and expense tiles open the transactions filtered to it. */
+  from?: string
+  to?: string
   fetching?: boolean
 }
 
-/** One stat tile: a tinted icon badge, a label and a large tabular figure. */
-function StatTile({ label, value, icon: Icon, tone }: { label: string; value: string; icon: typeof Wallet; tone: 'income' | 'expense' }) {
-  return (
-    <Card className="justify-center">
+/** One stat tile: a tinted icon badge, a label and a large tabular figure; with `to`, the whole tile is a link. */
+function StatTile({
+  label,
+  value,
+  icon: Icon,
+  tone,
+  to,
+  linkLabel,
+}: {
+  label: string
+  value: string
+  icon: typeof Wallet
+  tone: 'income' | 'expense'
+  to?: string
+  linkLabel?: string
+}) {
+  const card = (
+    <Card
+      className={cn(
+        'h-full justify-center',
+        to && 'transition duration-150 group-hover:-translate-y-0.5 group-hover:shadow-md group-active:translate-y-0',
+      )}
+    >
       <CardContent className="flex items-center gap-4">
         <div
           className={cn(
@@ -30,15 +55,36 @@ function StatTile({ label, value, icon: Icon, tone }: { label: string; value: st
           <p className="text-sm text-muted-foreground">{label}</p>
           <p className="truncate text-2xl font-semibold tracking-tight tabular-nums">{value}</p>
         </div>
+        {to && (
+          <ChevronLeft
+            className="ms-auto size-4 shrink-0 text-muted-foreground transition-transform ltr:rotate-180 group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5"
+            aria-hidden
+          />
+        )}
       </CardContent>
     </Card>
+  )
+  if (!to) return card
+  return (
+    <Link
+      to={to}
+      aria-label={`${label}: ${value}. ${linkLabel ?? ''}`}
+      className="group rounded-xl outline-offset-2 focus-visible:outline-2 focus-visible:outline-ring"
+    >
+      {card}
+    </Link>
   )
 }
 
 /** KPI row: the balance as the single hero figure (brand surface) plus income and expense stat tiles. */
-export function BalanceCards({ totalIncome, totalExpense, balance, fetching }: BalanceCardsProps) {
+export function BalanceCards({ totalIncome, totalExpense, balance, from, to, fetching }: BalanceCardsProps) {
   const { t } = useTranslation()
   const locale = useLocale()
+  const { idOf } = useTypeHelpers()
+  const listOf = (type: 'income' | 'expense') =>
+    from && to
+      ? `${ROUTES.transactions}?${new URLSearchParams({ typeId: idOf(type) || `type_${type}`, from, to })}`
+      : undefined
   const positive = balance >= 0
   // Share of income that was not spent; only meaningful when there was income.
   const savedPct = totalIncome > 0 ? Math.round((balance / totalIncome) * 100) : null
@@ -65,8 +111,22 @@ export function BalanceCards({ totalIncome, totalExpense, balance, fetching }: B
         </CardContent>
       </Card>
       <div className="grid gap-4 sm:grid-cols-2 md:col-span-2">
-        <StatTile label={t('dashboard.totalIncome')} value={formatMoney(totalIncome, locale)} icon={ArrowUpRight} tone="income" />
-        <StatTile label={t('dashboard.totalExpense')} value={formatMoney(totalExpense, locale)} icon={ArrowDownRight} tone="expense" />
+        <StatTile
+          label={t('dashboard.totalIncome')}
+          value={formatMoney(totalIncome, locale)}
+          icon={ArrowUpRight}
+          tone="income"
+          to={listOf('income')}
+          linkLabel={t('dashboard.showDetails')}
+        />
+        <StatTile
+          label={t('dashboard.totalExpense')}
+          value={formatMoney(totalExpense, locale)}
+          icon={ArrowDownRight}
+          tone="expense"
+          to={listOf('expense')}
+          linkLabel={t('dashboard.showDetails')}
+        />
       </div>
     </div>
   )

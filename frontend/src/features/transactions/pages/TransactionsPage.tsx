@@ -1,5 +1,6 @@
 import { Check, Loader2, Pencil, Plus, ReceiptText, X } from 'lucide-react'
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
@@ -38,7 +39,16 @@ export default function TransactionsPage() {
   const { t } = useTranslation()
   const toMessage = useApiErrorMessage()
   const canEdit = useCanEdit()
-  const [filters, setFilters] = useState<Filters>({ page: 1, pageSize: PAGE_SIZE })
+  const [searchParams] = useSearchParams()
+  // Links from the dashboard open the list already filtered (e.g. ?typeId=type_expense&from=…&to=…).
+  const [filters, setFilters] = useState<Filters>(() => ({
+    page: 1,
+    pageSize: PAGE_SIZE,
+    typeId: searchParams.get('typeId') ?? undefined,
+    categoryId: searchParams.get('categoryId') ?? undefined,
+    from: searchParams.get('from') ?? undefined,
+    to: searchParams.get('to') ?? undefined,
+  }))
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
   const [deleting, setDeleting] = useState<Transaction | null>(null)

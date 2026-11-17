@@ -48,5 +48,6 @@ export const httpApi: ApiContract = {
   },
   dashboard: {
     summary: (from, to) => request('GET', `/dashboard/summary${toQuery({ from, to })}`),
+    setSavingsGoal: (amount) => request('PUT', '/dashboard/savings-goal', { amount }),
   },
 }

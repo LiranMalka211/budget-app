@@ -135,3 +135,19 @@ def test_member_edit_permission(client):
     # Revoked again.
     client.put(f"/api/families/members/{member_id}/permissions", json={"canEdit": False}, headers=head)
     assert client.put(f"/api/transactions/{own['id']}", json=body, headers=member).status_code == 403
+
+
+def test_family_savings_goal_needs_edit_permission(client):
+    """The goal belongs to the family budget; only members who may edit can change it."""
+    head = register(client, "goal-head@example.com", "Dana", "Cohen")
+    member = register(client, "goal-member@example.com", "Yossi", "Cohen")
+    key = client.post("/api/families", json={"name": "Goal family"}, headers=head).json()["inviteKey"]
+    client.post("/api/families/join", json={"inviteKey": key}, headers=member)
+    member_id = client.get("/api/families/me", headers=head).json()["pending"][0]["userId"]
+    client.post(f"/api/families/members/{member_id}/approve", headers=head)
+
+    assert client.put("/api/dashboard/savings-goal", json={"amount": 2000}, headers=head).status_code == 200
+    params = {"from": "2020-01-01", "to": "2030-12-31"}
+    assert client.get("/api/dashboard/summary", params=params, headers=member).json()["monthBudget"]["goal"] == 2000
+    res = client.put("/api/dashboard/savings-goal", json={"amount": 0}, headers=member)
+    assert res.status_code == 403 and res.json()["code"] == "edit_not_allowed"

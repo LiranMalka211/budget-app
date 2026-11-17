@@ -35,3 +35,9 @@ export function compactCurrency(value: number, locale: string, currency = 'ILS')
     maximumFractionDigits: 1,
   }).format(value)
 }
+
+/**
+ * True on devices with a real hover (mouse, trackpad). On touch screens a tap fires a synthetic hover and then a
+ * click, and scrolling over a chart counts as hovering it, so touch devices drive chart details by tap only.
+ */
+export const CAN_HOVER = typeof window !== 'undefined' && window.matchMedia?.('(hover: hover)').matches
