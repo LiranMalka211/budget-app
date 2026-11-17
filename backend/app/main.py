@@ -9,6 +9,7 @@ from app.api import auth, dashboard, families, imports, insights, lookups, sched
 from app.core.config import get_settings
 from app.core.database import Base, SessionLocal, engine
 from app.core.errors import register_error_handlers
+from app.core.schema_upgrades import apply_schema_upgrades
 from app.services.scheduled_service import materialize_all
 from app.services.seed import seed_lookups
 
@@ -37,6 +38,7 @@ async def lifespan(_: FastAPI):
     import app.models  # noqa: F401 - registers every table on Base.metadata
 
     Base.metadata.create_all(bind=engine)
+    apply_schema_upgrades(engine)
     with SessionLocal() as db:
         seed_lookups(db)
     task = asyncio.create_task(_materialize_loop())

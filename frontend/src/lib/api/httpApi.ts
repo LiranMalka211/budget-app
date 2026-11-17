@@ -17,6 +17,7 @@ export const httpApi: ApiContract = {
     join: (inviteKey) => request('POST', '/families/join', { inviteKey }),
     approveMember: (userId) => request('POST', `/families/members/${userId}/approve`),
     removeMember: (userId) => request('DELETE', `/families/members/${userId}`),
+    setMemberPermission: (userId, canEdit) => request('PUT', `/families/members/${userId}/permissions`, { canEdit }),
     leave: () => request('POST', '/families/leave'),
     regenerateKey: () => request('POST', '/families/regenerate-key'),
   },

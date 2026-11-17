@@ -12,6 +12,8 @@ export const familyApi = {
   approveMember: (userId: string) => api.family.approveMember(userId),
   /** Removes a member or rejects a pending request (head only). */
   removeMember: (userId: string) => api.family.removeMember(userId),
+  /** Allows or stops a member editing and deleting rows (head only). */
+  setMemberPermission: (userId: string, canEdit: boolean) => api.family.setMemberPermission(userId, canEdit),
   /** Leaves the current family. */
   leave: () => api.family.leave(),
   /** Replaces the invite key (head only). */

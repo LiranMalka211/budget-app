@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
 import { useAuth } from '@/features/auth/authStore'
 import { formatDate } from '@/lib/format/dates'
 import { useLocale } from '@/lib/i18n/useDirection'
@@ -15,6 +16,10 @@ interface MembersTableProps {
   /** When true, shows the remove action on other members. */
   canManage: boolean
   onRemove: (member: FamilyMember) => void
+  /** Head only: allows or stops a member editing and deleting rows. */
+  onPermissionChange?: (member: FamilyMember, canEdit: boolean) => void
+  /** True while a permission change is being saved. */
+  permissionBusy?: boolean
 }
 
 /** Initials for the avatar badge. */
@@ -23,7 +28,7 @@ function initials(m: FamilyMember): string {
 }
 
 /** List of approved members with role badges and a remove action for the head of the family. */
-export function MembersTable({ members, headUserId, canManage, onRemove }: MembersTableProps) {
+export function MembersTable({ members, headUserId, canManage, onRemove, onPermissionChange, permissionBusy }: MembersTableProps) {
   const { t } = useTranslation()
   const locale = useLocale()
   const { user } = useAuth()
@@ -31,6 +36,7 @@ export function MembersTable({ members, headUserId, canManage, onRemove }: Membe
     <Card>
       <CardHeader>
         <CardTitle>{t('family.members')}</CardTitle>
+        <CardDescription>{t('family.permissions.explain')}</CardDescription>
       </CardHeader>
       <CardContent>
         <ul className="divide-y">
@@ -50,7 +56,21 @@ export function MembersTable({ members, headUserId, canManage, onRemove }: Membe
                   <p className="truncate text-xs text-muted-foreground">
                     {m.user.email} · {t('family.memberSince', { date: formatDate(m.joinedAt.slice(0, 10), locale) })}
                   </p>
+                  <p className="mt-0.5 text-xs text-muted-foreground">
+                    {isHead || m.canEdit ? t('family.permissions.canEdit') : t('family.permissions.addOnly')}
+                  </p>
                 </div>
+                {canManage && !isHead && onPermissionChange && (
+                  <label className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span className="hidden sm:inline">{t('family.permissions.allowEdit')}</span>
+                    <Switch
+                      checked={m.canEdit}
+                      disabled={permissionBusy}
+                      onCheckedChange={(v) => onPermissionChange(m, v)}
+                      aria-label={t('family.permissions.allowEditFor', { name: `${m.user.firstName} ${m.user.lastName}` })}
+                    />
+                  </label>
+                )}
                 <Badge variant={isHead ? 'default' : 'secondary'}>
                   {isHead && <Crown className="size-3" />} {isHead ? t('family.head') : t('family.member')}
                 </Badge>

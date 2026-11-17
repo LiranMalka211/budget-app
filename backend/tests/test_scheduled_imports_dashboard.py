@@ -113,7 +113,7 @@ def test_dashboard_summary(client):
     assert [c["categoryName"] for c in body["byCategory"]] == ["rent", "groceries"]
     assert len(body["byMonth"]) >= 6 and body["byMonth"][-1]["month"] == "2026-11"
     assert len(body["recentTransactions"]) == 3
-    assert body["latestInsight"] is None
+    assert body["latestInsights"] == []
 
 
 def test_insights_rule_based_without_api_key(client):
@@ -132,11 +132,24 @@ def test_insights_rule_based_without_api_key(client):
     )
     gen = client.post("/api/insights/generate", headers=headers)
     assert gen.status_code == 201, gen.text
-    titles = [i["title"] for i in gen.json()]
+    created = gen.json()
+    en = [i for i in created if i["language"] == "en"]
+    he = [i for i in created if i["language"] == "he"]
+    assert len(en) == len(he) >= 2, "every insight is stored once per language"
+    titles = [i["title"] for i in en]
     assert "Biggest spending category" in titles and "Savings rate" in titles
-    assert "Rent accounts for 100%" in gen.json()[0]["body"]
+    assert "Rent accounts for 100%" in en[0]["body"]
+    assert he[0]["title"] == "קטגוריית ההוצאה הגדולה"
+    assert "שכר דירה ומשכנתא היא 100%" in he[0]["body"]
 
     listed = client.get("/api/insights", headers=headers).json()
-    assert len(listed) == len(titles)
+    assert len(listed) == len(created)
+    assert [i["title"] for i in listed if i["language"] == "en"] == titles, "newest-first keeps the generated order"
+
+    # A newer generation replaces the dashboard set.
+    client.post("/api/insights/generate", headers=headers)
     summary = client.get("/api/dashboard/summary", params={"from": "2020-01-01", "to": "2030-01-01"}, headers=headers).json()
-    assert summary["latestInsight"]["title"] in titles
+    latest = summary["latestInsights"]
+    assert len(latest) == len(created)
+    assert {i["language"] for i in latest} == {"en", "he"}
+    assert not {i["id"] for i in latest} & {i["id"] for i in created}

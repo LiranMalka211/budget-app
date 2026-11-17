@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/common/PageHeader'
 import { Button } from '@/components/ui/button'
 import { InsightCard } from '../components/InsightCard'
 import { useGenerateInsights, useInsightsList } from '../useInsights'
+import { useInsightsInLanguage } from '../useInsightLanguage'
 
 /** Insights page: list of AI recommendations and a button that requests fresh ones. */
 export default function InsightsPage() {
@@ -15,6 +16,7 @@ export default function InsightsPage() {
   const toMessage = useApiErrorMessage()
   const query = useInsightsList()
   const generate = useGenerateInsights()
+  const insights = useInsightsInLanguage(query.data)
 
   /** Requests new insights and shows progress/outcome toasts. */
   const handleGenerate = async () => {
@@ -41,11 +43,11 @@ export default function InsightsPage() {
         <LoadingState />
       ) : query.isError ? (
         <ErrorState error={query.error} onRetry={() => void query.refetch()} />
-      ) : query.data.length === 0 ? (
+      ) : insights.length === 0 ? (
         <EmptyState icon={Sparkles} title={t('insights.empty')} description={t('insights.emptyHint')} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {query.data.map((i) => (
+          {insights.map((i) => (
             <InsightCard key={i.id} insight={i} />
           ))}
         </div>

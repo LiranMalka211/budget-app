@@ -52,6 +52,8 @@ export interface ApiContract {
     approveMember(userId: string): Promise<void>
     /** DELETE /families/members/{userId} (head only). Also rejects pending requests. */
     removeMember(userId: string): Promise<void>
+    /** PUT /families/members/{userId}/permissions (head only) */
+    setMemberPermission(userId: string, canEdit: boolean): Promise<void>
     /** POST /families/leave */
     leave(): Promise<void>
     /** POST /families/regenerate-key (head only) */

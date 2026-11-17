@@ -11,6 +11,7 @@ interface ErrorStateProps {
 /** Maps an unknown error to a translation key; feature-specific codes resolve under `<scope>.errors.<code>`. */
 export function errorMessageKey(error: unknown, scope?: string): string {
   if (error instanceof ApiError) {
+    if (error.code === 'edit_not_allowed') return 'errors.editNotAllowed'
     if (error.code && scope) return `${scope}.errors.${error.code}`
     if (error.status === 0) return 'errors.network'
     if (error.status === 401) return 'errors.unauthorized'

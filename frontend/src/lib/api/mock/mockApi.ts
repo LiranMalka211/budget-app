@@ -90,9 +90,9 @@ function buildSeedDb(): MockDb {
   const createdAt = subMonths(now, 4).toISOString()
   const family: Family = { id: familyId, name: 'Cohen family', inviteKey: 'DEMO-2026', headUserId: dana.id, createdAt }
   const members: MockDb['members'] = [
-    { userId: dana.id, familyId, status: 'approved', joinedAt: createdAt },
-    { userId: yossi.id, familyId, status: 'approved', joinedAt: createdAt },
-    { userId: noa.id, familyId, status: 'pending', joinedAt: now.toISOString() },
+    { userId: dana.id, familyId, status: 'approved', canEdit: true, joinedAt: createdAt },
+    { userId: yossi.id, familyId, status: 'approved', canEdit: false, joinedAt: createdAt },
+    { userId: noa.id, familyId, status: 'pending', canEdit: false, joinedAt: now.toISOString() },
   ]
 
   const transactions: Transaction[] = []
@@ -275,6 +275,7 @@ function familyOverviewFor(user: StoredUser): FamilyOverview | null {
   if (!family) return null
   const withUser = (m: Omit<FamilyMember, 'user'>): FamilyMember => ({
     ...m,
+    canEdit: m.canEdit ?? m.userId === family.headUserId,
     user: publicUser(d.users.find((u) => u.id === m.userId)!),
   })
   const all = d.members.filter((m) => m.familyId === family.id)
@@ -285,7 +286,39 @@ function familyOverviewFor(user: StoredUser): FamilyOverview | null {
     pending: isPending ? [] : all.filter((m) => m.status === 'pending').map(withUser),
     isHead: family.headUserId === user.id,
     myStatus: link.status,
+    canEdit: mayEdit(user),
   }
+}
+
+/** Same rule as the server: a personal budget and the head always edit; other members when the head allowed it. */
+function mayEdit(user: StoredUser): boolean {
+  if (!user.familyId) return true
+  const d = getDb()
+  const family = d.families.find((f) => f.id === user.familyId)
+  if (family?.headUserId === user.id) return true
+  const link = d.members.find((m) => m.userId === user.id && m.familyId === user.familyId)
+  return Boolean(link && link.status === 'approved' && link.canEdit)
+}
+
+/** Throws the server's 403 when the user may not edit. */
+function requireEdit(user: StoredUser): void {
+  if (!mayEdit(user)) throw new ApiError('Forbidden', 403, 'edit_not_allowed')
+}
+
+/** Built-in category keys in Hebrew, for generated insight text. */
+const CATEGORY_HE: Record<string, string> = {
+  groceries: 'סופר',
+  rent: 'שכר דירה ומשכנתא',
+  utilities: 'חשבונות',
+  transport: 'תחבורה',
+  dining: 'מסעדות',
+  entertainment: 'בילויים',
+  health: 'בריאות',
+  education: 'חינוך',
+  shopping: 'קניות',
+  insurance: 'ביטוח',
+  savings: 'חיסכון',
+  otherExpense: 'אחר',
 }
 
 /** Turns a category key like "otherExpense" into "Other expense" for generated insight text. */
@@ -378,7 +411,7 @@ export const mockApi: ApiContract = {
         createdAt: new Date().toISOString(),
       }
       d.families.push(family)
-      d.members.push({ userId: user.id, familyId: family.id, status: 'approved', joinedAt: family.createdAt })
+      d.members.push({ userId: user.id, familyId: family.id, status: 'approved', canEdit: true, joinedAt: family.createdAt })
       user.familyId = family.id
       // Personal history moves into the new shared budget.
       d.transactions.filter((t) => t.userId === user.id && t.familyId === null).forEach((t) => (t.familyId = family.id))
@@ -395,7 +428,7 @@ export const mockApi: ApiContract = {
       }
       const family = d.families.find((f) => f.inviteKey.toUpperCase() === inviteKey.trim().toUpperCase())
       if (!family) throw new ApiError('Key not found', 404, 'key_not_found')
-      d.members.push({ userId: user.id, familyId: family.id, status: 'pending', joinedAt: new Date().toISOString() })
+      d.members.push({ userId: user.id, familyId: family.id, status: 'pending', canEdit: false, joinedAt: new Date().toISOString() })
       saveDb(d)
       return { status: 'pending' }
     },
@@ -425,6 +458,18 @@ export const mockApi: ApiContract = {
       d.members = d.members.filter((m) => !(m.userId === userId && m.familyId === family.id))
       const user = d.users.find((u) => u.id === userId)
       if (user && user.familyId === family.id) user.familyId = null
+      saveDb(d)
+    },
+    async setMemberPermission(userId, canEdit) {
+      await delay()
+      const head = currentUser()
+      const d = getDb()
+      const family = d.families.find((f) => f.id === head.familyId && f.headUserId === head.id)
+      if (!family) throw new ApiError('Forbidden', 403, 'forbidden')
+      if (userId === head.id) throw new ApiError('The head can always edit', 409, 'head_always_edits')
+      const link = d.members.find((m) => m.userId === userId && m.familyId === family.id && m.status === 'approved')
+      if (!link) throw new ApiError('Not found', 404, 'not_found')
+      link.canEdit = canEdit
       saveDb(d)
     },
     async leave() {
@@ -519,6 +564,7 @@ export const mockApi: ApiContract = {
       const d = getDb()
       const tx = visibleTransactions(user).find((t) => t.id === id)
       if (!tx) throw new ApiError('Not found', 404, 'not_found')
+      requireEdit(user)
       Object.assign(tx, input)
       saveDb(d)
       return tx
@@ -529,6 +575,7 @@ export const mockApi: ApiContract = {
       const d = getDb()
       const tx = visibleTransactions(user).find((t) => t.id === id)
       if (!tx) throw new ApiError('Not found', 404, 'not_found')
+      requireEdit(user)
       d.transactions = d.transactions.filter((t) => t.id !== id)
       saveDb(d)
     },
@@ -567,6 +614,7 @@ export const mockApi: ApiContract = {
       const d = getDb()
       const s = visibleScheduled(user).find((x) => x.id === id)
       if (!s) throw new ApiError('Not found', 404, 'not_found')
+      requireEdit(user)
       const scheduleChanged =
         s.interval !== input.interval || s.dayOfMonth !== input.dayOfMonth || s.startDate !== input.startDate
       Object.assign(s, input, { endDate: input.endDate ?? null })
@@ -582,6 +630,7 @@ export const mockApi: ApiContract = {
       const user = currentUser()
       const d = getDb()
       if (!visibleScheduled(user).some((x) => x.id === id)) throw new ApiError('Not found', 404, 'not_found')
+      requireEdit(user)
       d.scheduled = d.scheduled.filter((x) => x.id !== id)
       saveDb(d)
     },
@@ -591,6 +640,7 @@ export const mockApi: ApiContract = {
       const d = getDb()
       const s = visibleScheduled(user).find((x) => x.id === id)
       if (!s) throw new ApiError('Not found', 404, 'not_found')
+      requireEdit(user)
       s.isActive = isActive
       saveDb(d)
       return s
@@ -652,6 +702,7 @@ export const mockApi: ApiContract = {
         : [user.id]
       return d.insights
         .filter((i) => scopeUserIds.includes(i.userId))
+        .map((i) => ({ ...i, language: i.language ?? 'en' }))
         .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     },
     async generate() {
@@ -665,18 +716,20 @@ export const mockApi: ApiContract = {
       const byCat = new Map<string, number>()
       txs.filter((t) => t.typeId === TYPE_EXPENSE_ID).forEach((t) => byCat.set(t.categoryId, (byCat.get(t.categoryId) ?? 0) + t.amount))
       const top = [...byCat.entries()].sort((a, b) => b[1] - a[1])[0]
-      const topName = top ? humanize(d.categories.find((c) => c.id === top[0])?.name ?? 'Other') : 'Nothing'
+      const topKey = top ? (d.categories.find((c) => c.id === top[0])?.name ?? 'otherExpense') : 'otherExpense'
       const topPct = top && expense ? Math.round((top[1] / expense) * 100) : 0
       const savingsRate = income ? Math.max(0, Math.round(((income - expense) / income) * 100)) : 0
       const recurring = visibleScheduled(user).filter((s) => s.isActive && s.typeId === TYPE_EXPENSE_ID)
-      const recurringTotal = recurring.reduce((s, r) => s + r.amount, 0)
-      const now = new Date().toISOString()
-      const { topCategory, savingsRate: savings, recurring: recurringTpl } = INSIGHT_TEMPLATES
-      const created: AiInsight[] = [
-        { id: newId('ins'), userId: user.id, createdAt: now, title: topCategory.title, body: topCategory.body(topName, topPct) },
-        { id: newId('ins'), userId: user.id, createdAt: now, title: savings.title, body: savings.body(savingsRate) },
-        { id: newId('ins'), userId: user.id, createdAt: now, title: recurringTpl.title, body: recurringTpl.body(recurring.length, `₪${recurringTotal.toLocaleString()}`) },
-      ]
+      const recurringTotal = `₪${recurring.reduce((s, r) => s + r.amount, 0).toLocaleString()}`
+      const now = Date.now()
+      // One row per insight and language; item k is stamped k ms earlier so newest-first keeps the order.
+      const created: AiInsight[] = (['en', 'he'] as const).flatMap((language) => {
+        const tpl = INSIGHT_TEMPLATES[language]
+        const topName = language === 'he' ? (CATEGORY_HE[topKey] ?? topKey) : humanize(topKey)
+        return [tpl.topCategory(topName, topPct), tpl.savingsRate(savingsRate), tpl.recurring(recurring.length, recurringTotal)].map(
+          (text, k) => ({ id: newId('ins'), userId: user.id, createdAt: new Date(now - k).toISOString(), language, ...text }),
+        )
+      })
       d.insights.push(...created)
       saveDb(d)
       return created
@@ -723,7 +776,10 @@ export const mockApi: ApiContract = {
         .filter((s) => s.isActive && s.nextRunDate >= today)
         .sort((a, b) => a.nextRunDate.localeCompare(b.nextRunDate))
         .slice(0, 5)
-      const latestInsight = (await mockApi.insights.list())[0] ?? null
+      const insights = await mockApi.insights.list()
+      // The newest generation: rows stamped within a second of the newest one (see insights.generate).
+      const newest = insights[0] ? Date.parse(insights[0].createdAt) : 0
+      const latestInsights = insights.filter((i) => newest - Date.parse(i.createdAt) < 1000)
 
       return {
         from,
@@ -735,7 +791,7 @@ export const mockApi: ApiContract = {
         byMonth: [...monthMap.values()],
         recentTransactions,
         upcomingScheduled,
-        latestInsight,
+        latestInsights,
       } satisfies DashboardSummary
     },
   },

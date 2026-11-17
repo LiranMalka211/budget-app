@@ -54,6 +54,15 @@ export function useRemoveMember() {
   })
 }
 
+/** Grants or revokes a member's edit permission (head only). */
+export function useSetMemberPermission() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ userId, canEdit }: { userId: string; canEdit: boolean }) => familyApi.setMemberPermission(userId, canEdit),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: familyKeys.overview }),
+  })
+}
+
 /** Leaves the family (or cancels a pending request). */
 export function useLeaveFamily() {
   const after = useAfterMembershipChange()

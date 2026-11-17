@@ -21,10 +21,12 @@ interface ScheduledListProps {
   onEdit: (s: ScheduledTransaction) => void
   onDelete: (s: ScheduledTransaction) => void
   onToggle: (s: ScheduledTransaction, isActive: boolean) => void
+  /** False for members without edit permission: no menu, and the switch is read-only. */
+  canEdit?: boolean
 }
 
 /** Responsive card grid of recurring payments with an active switch and edit/delete menu. */
-export function ScheduledList({ items, onEdit, onDelete, onToggle }: ScheduledListProps) {
+export function ScheduledList({ items, onEdit, onDelete, onToggle, canEdit = true }: ScheduledListProps) {
   const { t } = useTranslation()
   const locale = useLocale()
   const categoryLabel = useCategoryLabel()
@@ -41,6 +43,7 @@ export function ScheduledList({ items, onEdit, onDelete, onToggle }: ScheduledLi
                 <p className="truncate text-xs text-muted-foreground">{categoryLabel(s.categoryId)}</p>
               </div>
               <MoneyText amount={s.amount} isIncome={isIncome(s.typeId)} />
+              {canEdit && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon-sm" aria-label={t('common.actions')}>
@@ -56,6 +59,7 @@ export function ScheduledList({ items, onEdit, onDelete, onToggle }: ScheduledLi
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
+              )}
             </div>
             <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
               <div className="flex flex-wrap items-center gap-2">
@@ -67,7 +71,12 @@ export function ScheduledList({ items, onEdit, onDelete, onToggle }: ScheduledLi
               </div>
               <label className="inline-flex items-center gap-2">
                 <span>{s.isActive ? t('scheduled.active') : t('scheduled.paused')}</span>
-                <Switch checked={s.isActive} onCheckedChange={(v) => onToggle(s, v)} aria-label={t('scheduled.active')} />
+                <Switch
+                  checked={s.isActive}
+                  onCheckedChange={(v) => onToggle(s, v)}
+                  disabled={!canEdit}
+                  aria-label={t('scheduled.active')}
+                />
               </label>
             </div>
           </CardContent>

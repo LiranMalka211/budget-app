@@ -36,4 +36,5 @@ class DashboardSummary(CamelModel):
     by_month: list[MonthlyTotal]
     recent_transactions: list[TransactionOut]
     upcoming_scheduled: list[ScheduledTransactionOut]
-    latest_insight: AiInsightOut | None = None
+    # The newest generation, in every language; the client shows the rows in its own language.
+    latest_insights: list[AiInsightOut] = []

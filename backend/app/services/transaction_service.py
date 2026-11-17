@@ -9,6 +9,7 @@ from app.models.transaction import Transaction
 from app.models.user import User
 from app.schemas.transaction import TransactionInput
 from app.services.scheduled_service import materialize_for_user
+from app.services.permissions import require_edit
 from app.services.scope import visible_transactions
 
 
@@ -76,8 +77,9 @@ def _get_visible(db: Session, user: User, tx_id: str) -> Transaction:
 
 
 def update_transaction(db: Session, user: User, tx_id: str, data: TransactionInput) -> Transaction:
-    """Updates an existing transaction."""
+    """Updates an existing transaction (needs edit permission in a family)."""
     tx = _get_visible(db, user, tx_id)
+    require_edit(db, user)
     tx.date = data.date
     tx.title = data.title.strip()
     tx.amount = Decimal(str(data.amount))
@@ -90,7 +92,8 @@ def update_transaction(db: Session, user: User, tx_id: str, data: TransactionInp
 
 
 def delete_transaction(db: Session, user: User, tx_id: str) -> None:
-    """Deletes a transaction."""
+    """Deletes a transaction (needs edit permission in a family)."""
     tx = _get_visible(db, user, tx_id)
+    require_edit(db, user)
     db.delete(tx)
     db.commit()

@@ -45,23 +45,40 @@ export const DEMO_USER = {
   password: 'password123',
 }
 
-/** Canned insight templates the mock "generates" from the user's real totals. */
+/** Canned insight templates the mock "generates" from the user's real totals, in every UI language. */
 export const INSIGHT_TEMPLATES = {
-  topCategory: {
-    title: 'Biggest spending category',
-    body: (cat: string, pct: number) =>
-      `${cat} accounts for ${pct}% of your expenses this month. Setting a monthly cap for it and reviewing it weekly is the single most effective change you can make.`,
+  en: {
+    topCategory: (cat: string, pct: number) => ({
+      title: 'Biggest spending category',
+      body: `${cat} accounts for ${pct}% of your expenses this month. Setting a monthly cap for it and reviewing it weekly is the single most effective change you can make.`,
+    }),
+    savingsRate: (rate: number) => ({
+      title: 'Savings rate',
+      body:
+        rate >= 20
+          ? `You are saving ${rate}% of your income, which is above the recommended 20%. Consider moving the surplus into a dedicated savings account automatically each month.`
+          : `You are saving ${rate}% of your income. Aim for at least 20% by trimming discretionary categories such as dining and entertainment.`,
+    }),
+    recurring: (count: number, total: string) => ({
+      title: 'Recurring commitments',
+      body: `You have ${count} recurring payments totalling ${total} per month. Review each subscription and cancel the ones you no longer use.`,
+    }),
   },
-  savingsRate: {
-    title: 'Savings rate',
-    body: (rate: number) =>
-      rate >= 20
-        ? `You are saving ${rate}% of your income, which is above the recommended 20%. Consider moving the surplus into a dedicated savings account automatically each month.`
-        : `You are saving ${rate}% of your income. Aim for at least 20% by trimming discretionary categories such as dining and entertainment.`,
-  },
-  recurring: {
-    title: 'Recurring commitments',
-    body: (count: number, total: string) =>
-      `You have ${count} recurring payments totalling ${total} per month. Review each subscription and cancel the ones you no longer use.`,
+  he: {
+    topCategory: (cat: string, pct: number) => ({
+      title: 'קטגוריית ההוצאה הגדולה',
+      body: `${cat} היא ${pct}% מההוצאות שלכם החודש. הגדרת תקרה חודשית לקטגוריה הזו ובדיקה שבועית שלה הם השינוי האפקטיבי ביותר שאפשר לעשות.`,
+    }),
+    savingsRate: (rate: number) => ({
+      title: 'שיעור החיסכון',
+      body:
+        rate >= 20
+          ? `אתם חוסכים ${rate}% מההכנסה, מעל ל-20% המומלצים. כדאי להעביר את העודף אוטומטית לחשבון חיסכון ייעודי בכל חודש.`
+          : `אתם חוסכים ${rate}% מההכנסה. כדאי לשאוף ל-20% לפחות, למשל בקיצוץ בהוצאות גמישות כמו מסעדות ובילויים.`,
+    }),
+    recurring: (count: number, total: string) => ({
+      title: 'התחייבויות קבועות',
+      body: `יש לכם ${count} תשלומים קבועים בסך ${total} בחודש. עברו על כל מנוי ובטלו את אלה שאתם כבר לא משתמשים בהם.`,
+    }),
   },
 } as const

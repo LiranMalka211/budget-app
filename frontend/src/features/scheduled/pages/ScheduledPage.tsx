@@ -10,6 +10,7 @@ import { PageHeader } from '@/components/common/PageHeader'
 import { Button } from '@/components/ui/button'
 import type { ScheduledTransaction } from '@/types'
 import { ScheduledForm } from '../components/ScheduledForm'
+import { useCanEdit } from '@/hooks/useFamilyOverview'
 import { ScheduledList } from '../components/ScheduledList'
 import { useDeleteScheduled, useScheduledList, useToggleScheduled } from '../useScheduled'
 
@@ -18,6 +19,7 @@ export default function ScheduledPage() {
   const { t } = useTranslation()
   const toMessage = useApiErrorMessage()
   const query = useScheduledList()
+  const canEdit = useCanEdit()
   const remove = useDeleteScheduled()
   const toggle = useToggleScheduled()
   const [formOpen, setFormOpen] = useState(false)
@@ -86,7 +88,13 @@ export default function ScheduledPage() {
           }
         />
       ) : (
-        <ScheduledList items={query.data} onEdit={openEdit} onDelete={setDeleting} onToggle={(s, v) => void handleToggle(s, v)} />
+        <ScheduledList
+          items={query.data}
+          onEdit={openEdit}
+          onDelete={setDeleting}
+          onToggle={(s, v) => void handleToggle(s, v)}
+          canEdit={canEdit}
+        />
       )}
 
       <ScheduledForm open={formOpen} onOpenChange={setFormOpen} scheduled={editing} />

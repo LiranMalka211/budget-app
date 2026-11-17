@@ -13,7 +13,7 @@ import type { FamilyMember } from '@/types'
 import { CreateFamilyDialog, JoinFamilyDialog } from '../components/FamilyDialogs'
 import { InviteKeyCard } from '../components/InviteKeyCard'
 import { MembersTable, PendingRequestsList } from '../components/MembersTable'
-import { useApproveMember, useFamilyOverview, useLeaveFamily, useRemoveMember } from '../useFamily'
+import { useApproveMember, useFamilyOverview, useLeaveFamily, useRemoveMember, useSetMemberPermission } from '../useFamily'
 
 /** Family page: create/join when alone, pending notice while waiting, and member management once approved. */
 export default function FamilyPage() {
@@ -23,6 +23,7 @@ export default function FamilyPage() {
   const approve = useApproveMember()
   const remove = useRemoveMember()
   const leave = useLeaveFamily()
+  const permission = useSetMemberPermission()
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
   const [removing, setRemoving] = useState<FamilyMember | null>(null)
@@ -32,6 +33,16 @@ export default function FamilyPage() {
   const handleApprove = async (m: FamilyMember) => {
     try {
       await approve.mutateAsync(m.userId)
+    } catch (err) {
+      toast.error(toMessage(err, 'family'))
+    }
+  }
+
+  /** Head grants or revokes a member's edit permission. */
+  const handlePermission = async (m: FamilyMember, canEdit: boolean) => {
+    try {
+      await permission.mutateAsync({ userId: m.userId, canEdit })
+      toast.success(t(canEdit ? 'family.permissions.granted' : 'family.permissions.revoked', { name: m.user.firstName }))
     } catch (err) {
       toast.error(toMessage(err, 'family'))
     }
@@ -163,6 +174,8 @@ export default function FamilyPage() {
           headUserId={overview.family.headUserId}
           canManage={overview.isHead}
           onRemove={setRemoving}
+          onPermissionChange={(m, v) => void handlePermission(m, v)}
+          permissionBusy={permission.isPending}
         />
         {overview.isHead && (
           <PendingRequestsList

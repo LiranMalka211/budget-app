@@ -8,6 +8,7 @@ import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/componen
 import { useCategoryLabel, useTypeHelpers } from '@/hooks/useLookups'
 import { formatDate } from '@/lib/format/dates'
 import { useLocale } from '@/lib/i18n/useDirection'
+import { useInsightsInLanguage } from '@/features/insights/useInsightLanguage'
 import type { AiInsight, ScheduledTransaction, Transaction } from '@/types'
 
 /** Small "view all" link used in the widget headers. */
@@ -92,25 +93,30 @@ export function UpcomingScheduled({ items }: { items: ScheduledTransaction[] }) 
   )
 }
 
-/** Teaser of the newest AI insight with a link to the full list. */
-export function LatestInsight({ insight }: { insight: AiInsight | null }) {
+/** The newest generation of AI insights, in the active language, with a link to the full list. */
+export function LatestInsights({ insights }: { insights: AiInsight[] }) {
   const { t } = useTranslation()
+  const items = useInsightsInLanguage(insights)
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Sparkles className="size-4 text-amber-500" /> {t('dashboard.latestInsight')}
+          <Sparkles className="size-4 text-amber-500" /> {t('dashboard.latestInsights')}
         </CardTitle>
         <CardAction>
           <ViewAll to={ROUTES.insights} />
         </CardAction>
       </CardHeader>
       <CardContent>
-        {insight ? (
-          <div>
-            <p className="font-medium">{insight.title}</p>
-            <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{insight.body}</p>
-          </div>
+        {items.length ? (
+          <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {items.map((insight) => (
+              <li key={insight.id} className="rounded-xl bg-muted/50 p-4">
+                <p className="font-medium">{insight.title}</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{insight.body}</p>
+              </li>
+            ))}
+          </ul>
         ) : (
           <p className="text-sm text-muted-foreground">{t('insights.emptyHint')}</p>
         )}

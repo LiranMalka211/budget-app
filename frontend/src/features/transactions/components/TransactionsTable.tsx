@@ -18,13 +18,15 @@ import type { Transaction } from '@/types'
 
 interface TransactionsTableProps {
   items: Transaction[]
-  onEdit: (tx: Transaction) => void
-  onDelete: (tx: Transaction) => void
+  /** Edit and delete; left out for members without edit permission, which hides the row menu. */
+  onEdit?: (tx: Transaction) => void
+  onDelete?: (tx: Transaction) => void
 }
 
 /** Edit/delete menu shown on each row. */
 function RowActions({ tx, onEdit, onDelete }: { tx: Transaction } & Omit<TransactionsTableProps, 'items'>) {
   const { t } = useTranslation()
+  if (!onEdit || !onDelete) return null
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -86,7 +88,7 @@ export function TransactionsTable({ items, onEdit, onDelete }: TransactionsTable
               {showUploader && <TableHead>{t('transactions.uploadedBy')}</TableHead>}
               <TableHead>{t('common.type')}</TableHead>
               <TableHead className="text-end">{t('common.amount')}</TableHead>
-              <TableHead className="w-10" />
+              {onEdit && <TableHead className="w-10" />}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -105,9 +107,11 @@ export function TransactionsTable({ items, onEdit, onDelete }: TransactionsTable
                 <TableCell className="text-end">
                   <MoneyText amount={tx.amount} isIncome={isIncome(tx.typeId)} />
                 </TableCell>
-                <TableCell>
-                  <RowActions tx={tx} onEdit={onEdit} onDelete={onDelete} />
-                </TableCell>
+                {onEdit && (
+                  <TableCell>
+                    <RowActions tx={tx} onEdit={onEdit} onDelete={onDelete} />
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>

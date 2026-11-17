@@ -28,5 +28,6 @@ export interface DashboardSummary {
   byMonth: MonthlyTotal[]
   recentTransactions: Transaction[]
   upcomingScheduled: ScheduledTransaction[]
-  latestInsight: AiInsight | null
+  /** The newest generation of insights, in every language. */
+  latestInsights: AiInsight[]
 }

@@ -19,6 +19,16 @@ export function useFamilyOverview() {
   })
 }
 
+/**
+ * Whether the current user may change and delete rows. A personal budget always may; in a family the head decides
+ * (the server enforces it too). False while the family is still loading, so edit controls never flash in.
+ */
+export function useCanEdit(): boolean {
+  const { data, isPending } = useFamilyOverview()
+  if (isPending) return false
+  return data ? data.canEdit : true
+}
+
 /** Returns a function that maps a userId to a display name ("you" for the current user). */
 export function useMemberName() {
   const { t } = useTranslation()

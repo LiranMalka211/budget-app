@@ -10,6 +10,7 @@ from app.models.scheduled import ScheduledTransaction
 from app.models.transaction import Transaction
 from app.models.user import User
 from app.schemas.scheduled import ScheduledTransactionInput
+from app.services.permissions import require_edit
 from app.services.scope import visible_scheduled
 
 
@@ -131,8 +132,9 @@ def _get_visible(db: Session, user: User, scheduled_id: str) -> ScheduledTransac
 
 
 def update_scheduled(db: Session, user: User, scheduled_id: str, data: ScheduledTransactionInput) -> ScheduledTransaction:
-    """Updates a schedule; recomputes the next run when the recurrence itself changed."""
+    """Updates a schedule; recomputes the next run when the recurrence itself changed. Needs edit permission."""
     s = _get_visible(db, user, scheduled_id)
+    require_edit(db, user)
     day = None if data.interval == "weekly" else data.day_of_month
     recurrence_changed = (s.interval, s.day_of_month, s.start_date) != (data.interval, day, data.start_date)
     s.title = data.title.strip()
@@ -152,15 +154,17 @@ def update_scheduled(db: Session, user: User, scheduled_id: str, data: Scheduled
 
 
 def delete_scheduled(db: Session, user: User, scheduled_id: str) -> None:
-    """Deletes a schedule; transactions it already generated are kept."""
+    """Deletes a schedule; transactions it already generated are kept. Needs edit permission."""
     s = _get_visible(db, user, scheduled_id)
+    require_edit(db, user)
     db.delete(s)
     db.commit()
 
 
 def toggle_scheduled(db: Session, user: User, scheduled_id: str, is_active: bool) -> ScheduledTransaction:
-    """Pauses or resumes a schedule."""
+    """Pauses or resumes a schedule. Needs edit permission."""
     s = _get_visible(db, user, scheduled_id)
+    require_edit(db, user)
     s.is_active = is_active
     db.commit()
     db.refresh(s)

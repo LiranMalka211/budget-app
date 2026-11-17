@@ -8,6 +8,7 @@ from app.models.scheduled import ScheduledTransaction
 from app.models.transaction import Transaction
 from app.models.user import User
 from app.schemas.family import FamilyMemberOut, FamilyOut, FamilyOverviewOut
+from app.services.permissions import can_edit
 
 
 def _membership(db: Session, user_id: str) -> FamilyMember | None:
@@ -57,6 +58,7 @@ def get_overview(db: Session, user: User) -> FamilyOverviewOut | None:
         pending=[] if is_pending else [to_out(m) for m in all_members if m.status == "pending"],
         is_head=family.head_user_id == user.id,
         my_status=link.status,  # type: ignore[arg-type]
+        can_edit=can_edit(db, user),  # a pending user still works on their personal budget
     )
 
 
@@ -67,7 +69,7 @@ def create_family(db: Session, user: User, name: str) -> Family:
     family = Family(name=name.strip(), invite_key=new_invite_key(), head_user_id=user.id)
     db.add(family)
     db.flush()
-    db.add(FamilyMember(user_id=user.id, family_id=family.id, status="approved"))
+    db.add(FamilyMember(user_id=user.id, family_id=family.id, status="approved", can_edit=True))
     user.family_id = family.id
     _move_personal_data_into_family(db, user.id, family.id)
     db.commit()
@@ -141,6 +143,18 @@ def leave_family(db: Session, user: User) -> None:
             db.execute(update(model).where(model.family_id == family.id).values(family_id=None))
         db.flush()
         db.delete(family)
+    db.commit()
+
+
+def set_member_permission(db: Session, head: User, user_id: str, allow_edit: bool) -> None:
+    """Head grants or revokes a member's right to change and delete rows."""
+    family = _family_as_head(db, head)
+    if user_id == head.id:
+        raise ApiError(409, "head_always_edits", "The head of the family can always edit")
+    link = db.get(FamilyMember, (user_id, family.id))
+    if link is None or link.status != "approved":
+        raise not_found()
+    link.can_edit = allow_edit
     db.commit()
 
 

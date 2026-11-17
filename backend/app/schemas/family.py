@@ -23,6 +23,7 @@ class FamilyMemberOut(CamelModel):
     user_id: str
     family_id: str
     status: Literal["pending", "approved"]
+    can_edit: bool = False
     joined_at: datetime
     user: UserOut
 
@@ -35,6 +36,8 @@ class FamilyOverviewOut(CamelModel):
     pending: list[FamilyMemberOut]
     is_head: bool
     my_status: Literal["pending", "approved"]
+    # Whether the current user may change and delete rows (always true for the head).
+    can_edit: bool = False
 
 
 class CreateFamilyInput(CamelModel):
@@ -53,3 +56,9 @@ class JoinFamilyResponse(CamelModel):
     """Status of the membership after a join request."""
 
     status: Literal["pending", "approved"]
+
+
+class MemberPermissionInput(CamelModel):
+    """The head's decision on whether a member may edit and delete rows."""
+
+    can_edit: bool

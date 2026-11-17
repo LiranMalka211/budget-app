@@ -19,6 +19,8 @@ export interface FamilyMember {
   userId: string
   familyId: string
   status: FamilyMemberStatus
+  /** Granted by the head: may change and delete rows. Every member may read and add. */
+  canEdit: boolean
   joinedAt: string
   user: User
 }
@@ -32,4 +34,6 @@ export interface FamilyOverview {
   isHead: boolean
   /** The current user's own membership status; "pending" users see the family name only. */
   myStatus: FamilyMemberStatus
+  /** Whether the current user may change and delete rows (always true for the head). */
+  canEdit: boolean
 }

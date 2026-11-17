@@ -8,6 +8,7 @@ import { ErrorState, useApiErrorMessage } from '@/components/common/ErrorState'
 import { LoadingState } from '@/components/common/LoadingState'
 import { PageHeader } from '@/components/common/PageHeader'
 import { Button } from '@/components/ui/button'
+import { useCanEdit } from '@/hooks/useFamilyOverview'
 import type { Transaction, TransactionFilters as Filters } from '@/types'
 import { TransactionFilters } from '../components/TransactionFilters'
 import { TransactionForm } from '../components/TransactionForm'
@@ -36,6 +37,7 @@ function sameAsSaved(tx: Transaction, d: RowDraft): boolean {
 export default function TransactionsPage() {
   const { t } = useTranslation()
   const toMessage = useApiErrorMessage()
+  const canEdit = useCanEdit()
   const [filters, setFilters] = useState<Filters>({ page: 1, pageSize: PAGE_SIZE })
   const [formOpen, setFormOpen] = useState(false)
   const [editing, setEditing] = useState<Transaction | null>(null)
@@ -155,9 +157,11 @@ export default function TransactionsPage() {
     </>
   ) : (
     <>
-      <Button variant="outline" onClick={() => setEditMode(true)} disabled={!data || data.items.length === 0}>
-        <Pencil /> {t('transactions.editMode')}
-      </Button>
+      {canEdit && (
+        <Button variant="outline" onClick={() => setEditMode(true)} disabled={!data || data.items.length === 0}>
+          <Pencil /> {t('transactions.editMode')}
+        </Button>
+      )}
       <Button onClick={openCreate}>
         <Plus /> {t('transactions.add')}
       </Button>
@@ -167,6 +171,12 @@ export default function TransactionsPage() {
   return (
     <div className="flex flex-col gap-6">
       <PageHeader title={t('transactions.title')} subtitle={t('transactions.subtitle')} actions={headerActions} />
+
+      {!canEdit && (
+        <p className="rounded-lg border bg-muted/50 px-4 py-2.5 text-sm text-muted-foreground" role="note">
+          {t('family.permissions.addOnlyHint')}
+        </p>
+      )}
 
       {editMode && (
         <p className="rounded-lg border border-primary/20 bg-accent/60 px-4 py-2.5 text-sm text-accent-foreground" role="status">
@@ -198,7 +208,7 @@ export default function TransactionsPage() {
       ) : (
         data && (
           <>
-            {editMode ? (
+            {editMode && canEdit ? (
               <TransactionsEditTable
                 items={data.items}
                 valueOf={valueOf}
@@ -207,7 +217,11 @@ export default function TransactionsPage() {
                 onDelete={setDeleting}
               />
             ) : (
-              <TransactionsTable items={data.items} onEdit={openEdit} onDelete={setDeleting} />
+              <TransactionsTable
+                items={data.items}
+                onEdit={canEdit ? openEdit : undefined}
+                onDelete={canEdit ? setDeleting : undefined}
+              />
             )}
             <div className="flex items-center justify-between text-sm text-muted-foreground">
               <span>

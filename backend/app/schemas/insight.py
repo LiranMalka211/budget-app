@@ -9,5 +9,6 @@ class AiInsightOut(CamelModel):
     id: str
     title: str
     body: str
+    language: str
     user_id: str
     created_at: datetime

@@ -7,6 +7,7 @@ from app.schemas.family import (
     FamilyOverviewOut,
     JoinFamilyInput,
     JoinFamilyResponse,
+    MemberPermissionInput,
 )
 from app.services import family_service
 
@@ -41,6 +42,12 @@ def approve_member(user_id: str, user: CurrentUser, db: DbSession) -> None:
 def remove_member(user_id: str, user: CurrentUser, db: DbSession) -> None:
     """Head removes a member or rejects a request."""
     family_service.remove_member(db, user, user_id)
+
+
+@router.put("/members/{user_id}/permissions", status_code=204)
+def set_member_permission(user_id: str, data: MemberPermissionInput, user: CurrentUser, db: DbSession) -> None:
+    """Head allows or stops a member editing and deleting rows."""
+    family_service.set_member_permission(db, user, user_id, data.can_edit)
 
 
 @router.post("/leave", status_code=204)

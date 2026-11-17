@@ -73,7 +73,7 @@ def build_summary(db: Session, user: User, date_from: date, date_to: date) -> Da
         .order_by(ScheduledTransaction.next_run_date)
         .limit(5)
     ).all()
-    latest = insight_service.list_insights(db, user)[:1]
+    latest = insight_service.latest_generation(db, user)
 
     return DashboardSummary(
         from_=date_from,
@@ -85,5 +85,5 @@ def build_summary(db: Session, user: User, date_from: date, date_to: date) -> Da
         by_month=list(months.values()),
         recent_transactions=[TransactionOut.model_validate(t) for t in recent],
         upcoming_scheduled=[ScheduledTransactionOut.model_validate(s) for s in upcoming],
-        latest_insight=AiInsightOut.model_validate(latest[0]) if latest else None,
+        latest_insights=[AiInsightOut.model_validate(i) for i in latest],
     )
