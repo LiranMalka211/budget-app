@@ -28,9 +28,9 @@ services:
       - key: SECRET_KEY
         generateValue: true
       - key: FRONTEND_URL
-        value: https://family-budget-web.onrender.com
+        value: https://family-budget-web-r37v.onrender.com
       - key: CORS_ORIGINS
-        value: https://family-budget-web.onrender.com
+        value: https://family-budget-web-r37v.onrender.com
       - key: ANTHROPIC_API_KEY
         sync: false # optional; leave empty for the free rule-based insights
       - key: SMTP_HOST
@@ -59,7 +59,7 @@ services:
       - key: VITE_USE_MOCK
         value: "false"
       - key: VITE_API_HOST
-        value: family-budget-api.onrender.com
+        value: family-budget-api-e4h2.onrender.com
     headers:
       - path: /assets/*
         name: Cache-Control
